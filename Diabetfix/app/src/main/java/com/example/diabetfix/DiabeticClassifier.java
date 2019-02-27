@@ -9954,7 +9954,7 @@ class DiabeticClassifier {
             }
 
             // Prediction:
-            int prediction = RandomForestClassifier.predict(features);
+            int prediction = DiabeticClassifier.predict(features);
             System.out.println(prediction);
 
         }
