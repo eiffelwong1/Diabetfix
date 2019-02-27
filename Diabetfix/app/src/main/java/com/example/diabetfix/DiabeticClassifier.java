@@ -9922,16 +9922,16 @@ class DiabeticClassifier {
     public static int predict(double[] features) {
         int n_classes = 2;
         int[] classes = new int[n_classes];
-        classes[RandomForestClassifier.predict_0(features)]++;
-        classes[RandomForestClassifier.predict_1(features)]++;
-        classes[RandomForestClassifier.predict_2(features)]++;
-        classes[RandomForestClassifier.predict_3(features)]++;
-        classes[RandomForestClassifier.predict_4(features)]++;
-        classes[RandomForestClassifier.predict_5(features)]++;
-        classes[RandomForestClassifier.predict_6(features)]++;
-        classes[RandomForestClassifier.predict_7(features)]++;
-        classes[RandomForestClassifier.predict_8(features)]++;
-        classes[RandomForestClassifier.predict_9(features)]++;
+        classes[DiabeticClassifier.predict_0(features)]++;
+        classes[DiabeticClassifier.predict_1(features)]++;
+        classes[DiabeticClassifier.predict_2(features)]++;
+        classes[DiabeticClassifier.predict_3(features)]++;
+        classes[DiabeticClassifier.predict_4(features)]++;
+        classes[DiabeticClassifier.predict_5(features)]++;
+        classes[DiabeticClassifier.predict_6(features)]++;
+        classes[DiabeticClassifier.predict_7(features)]++;
+        classes[DiabeticClassifier.predict_8(features)]++;
+        classes[DiabeticClassifier.predict_9(features)]++;
     
         int class_idx = 0;
         int class_val = classes[0];
