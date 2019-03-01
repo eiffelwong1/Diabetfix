@@ -19,6 +19,7 @@ import java.net.URLEncoder;
 import java.security.SecureRandom;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.net.URL;
 import java.net.HttpURLConnection;
@@ -48,6 +49,8 @@ import org.json.JSONObject;
 import java.lang.Object;
 
 import java.util.Arrays;
+import java.util.Map;
+import java.util.UUID;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
@@ -57,13 +60,13 @@ import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
 public class MainActivity extends AppCompatActivity {
-    private StringRequest getJSON(String url) {
+    private JsonArrayRequest getUsers(String url) {
         Log.d("URL", url);
-        StringRequest jsonArrayRequest = new StringRequest(
-                Request.Method.GET, url,
-                new Response.Listener<String>() {
+        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(
+                Request.Method.GET, url, null,
+                new Response.Listener<JSONArray>() {
                     @Override
-                    public void onResponse(String response) {
+                    public void onResponse(JSONArray response) {
                         Log.d("Object", response.toString());
                     }
                 },
@@ -76,6 +79,40 @@ public class MainActivity extends AppCompatActivity {
                 }
         );
         return jsonArrayRequest;
+    }
+
+    private StringRequest signUpUserApi(String url, final userClass new_user) {
+        StringRequest signUpPostRequest = new StringRequest(
+                Request.Method.POST, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        // response
+                        Log.d("Response", response.toString());
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        // error
+                        System.out.println("Error: " + error);
+                    }
+                }) {
+                    @Override
+                    protected Map<String, String> getParams() {
+                        Map<String, String> params = new HashMap<>();
+                        params.put("first_name", new_user.first_name);
+                        params.put("last_name", new_user.last_name);
+                        params.put("age", String.valueOf(new_user.age));
+                        params.put("sex", new_user.sex.toString());
+                        params.put("height", String.valueOf(new_user.height));
+                        params.put("weight", String.valueOf(new_user.weight));
+                        params.put("diabetic", String.valueOf(new_user.isDiabetic));
+                        params.put("health_focus", new_user.healthFocus.toString());
+                        return params;
+                    }
+                };
+        return signUpPostRequest;
     }
 
     private TextView mTextMessage;
@@ -109,9 +146,16 @@ public class MainActivity extends AppCompatActivity {
         // Set up the network to use HttpURLConnection as the HTTP client.
         Network network = new BasicNetwork(new HurlStack());
         queue.start();
-        StringRequest obj = getJSON("http://10.0.2.2:3000/users");
+        JsonArrayRequest obj = getUsers("http://10.0.2.2:3000/users");
+        userClass testUser = new userClass(
+                "John", "Doe",
+                22, sex_options.MALE,
+                170, 160,
+                true, healthFocusOptions.ACTIVITY);
+        StringRequest signuptest = signUpUserApi("http://10.0.2.2:3000/createUser", testUser);
         obj.setRetryPolicy(new DefaultRetryPolicy(5*DefaultRetryPolicy.DEFAULT_TIMEOUT_MS, 0, 0));
         queue.add(obj);
+        queue.add(signuptest);
         setContentView(R.layout.activity_main);
         mTextMessage = (TextView) findViewById(R.id.message);
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
