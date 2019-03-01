@@ -1,5 +1,6 @@
 package com.example.diabetfix;
 
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -160,6 +161,10 @@ public class MainActivity extends AppCompatActivity {
         mTextMessage = (TextView) findViewById(R.id.message);
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+
+        //Starts app at profile input activity
+//        Intent intent = new Intent(this, com.example.diabetfix.profileInputActivity.class);
+//        startActivity(intent);
     }
 
 }
