@@ -1,121 +1,43 @@
 package com.example.diabetfix;
 
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AppCompatActivity;
-import android.view.MenuItem;
-import android.widget.TextView;
-
-import java.io.BufferedInputStream;
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.net.URLEncoder;
-import java.security.SecureRandom;
-import java.security.cert.X509Certificate;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.net.URL;
-import java.net.HttpURLConnection;
-import java.io.InputStream;
+import android.text.TextUtils;
 import android.util.Log;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.EditText;
+import android.widget.ProgressBar;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
+import android.widget.TextView;
+import android.widget.Toast;
 
-import com.android.volley.Cache;
-import com.android.volley.DefaultRetryPolicy;
-import com.android.volley.Network;
+import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
-import com.android.volley.RequestQueue;
 import com.android.volley.Response;
-import com.android.volley.RetryPolicy;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.BasicNetwork;
-import com.android.volley.toolbox.DiskBasedCache;
-import com.android.volley.toolbox.HurlStack;
-import com.android.volley.toolbox.JsonArrayRequest;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
-import com.google.android.gms.security.ProviderInstaller;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import java.lang.Object;
 
-import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
-
-import javax.net.ssl.HostnameVerifier;
-import javax.net.ssl.HttpsURLConnection;
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLSession;
-import javax.net.ssl.TrustManager;
-import javax.net.ssl.X509TrustManager;
 
 public class MainActivity extends AppCompatActivity {
-    private JsonArrayRequest getUsers(String url) {
-        Log.d("URL", url);
-        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(
-                Request.Method.GET, url, null,
-                new Response.Listener<JSONArray>() {
-                    @Override
-                    public void onResponse(JSONArray response) {
-                        Log.d("Object", response.toString());
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        // Handle error;
-                        System.out.println("Error: " + error);
-                    }
-                }
-        );
-        return jsonArrayRequest;
-    }
+    EditText editTextUsername, editTextPassword;
+    EditText editTextFName, editTextLName;
+    EditText editTextAge;
+    RadioGroup radioGroupSex;
+    EditText editTextHeight, editTextWeight;
+    RadioGroup radioGroupDiabetic;
+    RadioGroup radioGroupHealthFocus;
 
-    private StringRequest signUpUserApi(String url, final userClass new_user) {
-        StringRequest signUpPostRequest = new StringRequest(
-                Request.Method.POST, url,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        // response
-                        Log.d("Response", response.toString());
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        // error
-                        System.out.println("Error: " + error);
-                    }
-                }) {
-                    @Override
-                    protected Map<String, String> getParams() {
-                        Map<String, String> params = new HashMap<>();
-                        params.put("first_name", new_user.first_name);
-                        params.put("last_name", new_user.last_name);
-                        params.put("age", String.valueOf(new_user.age));
-                        params.put("sex", new_user.sex.toString());
-                        params.put("height", String.valueOf(new_user.height));
-                        params.put("weight", String.valueOf(new_user.weight));
-                        params.put("diabetic", String.valueOf(new_user.isDiabetic));
-                        params.put("health_focus", new_user.healthFocus.toString());
-                        return params;
-                    }
-                };
-        return signUpPostRequest;
-    }
-
+    ProgressBar progressBar;
     private TextView mTextMessage;
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
@@ -141,30 +63,192 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        RequestQueue queue = Volley.newRequestQueue(MainActivity.this);
-        // Instantiate the cache
-        Cache cache = new DiskBasedCache(getCacheDir(), 1024 * 1024); // 1MB cap
-        // Set up the network to use HttpURLConnection as the HTTP client.
-        Network network = new BasicNetwork(new HurlStack());
-        queue.start();
-        JsonArrayRequest obj = getUsers("http://10.0.2.2:3000/users");
-        userClass testUser = new userClass(
-                "John", "Doe",
-                22, sex_options.MALE,
-                170, 160,
-                true, healthFocusOptions.ACTIVITY);
-        StringRequest signuptest = signUpUserApi("http://10.0.2.2:3000/createUser", testUser);
-        obj.setRetryPolicy(new DefaultRetryPolicy(5*DefaultRetryPolicy.DEFAULT_TIMEOUT_MS, 0, 0));
-        queue.add(obj);
-        queue.add(signuptest);
         setContentView(R.layout.activity_main);
-        mTextMessage = (TextView) findViewById(R.id.message);
-        BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
-        navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+
+        progressBar = (ProgressBar) findViewById(R.id.progressBar);
+
+        // If the user is already logged in, go to their profile
+        if (SharedPrefManager.getInstance(this).isLoggedIn()) {
+            finish();
+            startActivity(new Intent(this, ProfileActivity.class));
+            return;
+        }
+
+        editTextUsername = (EditText) findViewById(R.id.editTextUsername);
+        editTextPassword = (EditText) findViewById(R.id.editTextPassword);
+        editTextFName = (EditText) findViewById(R.id.editTextFName);
+        editTextLName = (EditText) findViewById(R.id.editTextLName);
+        editTextAge = (EditText) findViewById(R.id.editTextAge);
+        radioGroupSex = (RadioGroup) findViewById(R.id.radioSex);
+        editTextHeight = (EditText) findViewById(R.id.editTextHeight);
+        editTextWeight = (EditText) findViewById(R.id.editTextWeight);
+        radioGroupDiabetic = (RadioGroup) findViewById(R.id.radioDiabetic);
+        radioGroupHealthFocus = (RadioGroup) findViewById(R.id.radioHealthFocus);
+
+        findViewById(R.id.buttonRegister).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // If the user presses register button
+                // Register the user to the server
+                registerUser();
+            }
+        });
+        findViewById(R.id.textViewLogin).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // If the user presses the login button
+                // Bring them to the login screen
+                finish();
+                startActivity(new Intent(MainActivity.this, LoginActivity.class));
+            }
+        });
+    }
+
+    private void registerUser() {
+        final String username = editTextUsername.getText().toString().trim();
+        final String password = editTextPassword.getText().toString().trim();
+        final String first_name = editTextFName.getText().toString().trim();
+        final String last_name = editTextLName.getText().toString().trim();
+        final String age = editTextAge.getText().toString().trim();
+        final String sex = ((RadioButton) findViewById(radioGroupSex.getCheckedRadioButtonId())).getText().toString();
+        final String height = editTextHeight.getText().toString().trim();
+        final String weight = editTextWeight.getText().toString().trim();
+        final Boolean diabetic = ((RadioButton) findViewById(radioGroupDiabetic.getCheckedRadioButtonId())).isChecked();
+        final String health_focus = ((RadioButton) findViewById(radioGroupHealthFocus.getCheckedRadioButtonId())).getText().toString();
+
+        // Validate the fields
+        if (TextUtils.isEmpty(username)) {
+            editTextUsername.setError("Please enter username");
+            editTextUsername.requestFocus();
+            return;
+        }
+
+        if (TextUtils.isEmpty(password)) {
+            editTextUsername.setError("Enter a password");
+            editTextUsername.requestFocus();
+            return;
+        }
+
+        if (TextUtils.isEmpty(first_name)) {
+            editTextUsername.setError("Enter your first name");
+            editTextUsername.requestFocus();
+            return;
+        }
+
+        if (TextUtils.isEmpty(last_name)) {
+            editTextUsername.setError("Enter your last name");
+            editTextUsername.requestFocus();
+            return;
+        }
+
+        if (TextUtils.isEmpty(age)) {
+            editTextUsername.setError("Enter your age");
+            editTextUsername.requestFocus();
+            return;
+        }
+
+        if (TextUtils.isEmpty(sex)) {
+            editTextUsername.setError("Enter your sex");
+            editTextUsername.requestFocus();
+            return;
+        }
+
+        if (TextUtils.isEmpty(height)) {
+            editTextUsername.setError("Enter your height");
+            editTextUsername.requestFocus();
+            return;
+        }
+
+        if (TextUtils.isEmpty(weight)) {
+            editTextUsername.setError("Enter your weight");
+            editTextUsername.requestFocus();
+            return;
+        }
+
+        if (TextUtils.isEmpty(health_focus)) {
+            editTextUsername.setError("Enter what you wish to focus on");
+            editTextUsername.requestFocus();
+            return;
+        }
+
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, URLs.URL_REGISTER,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        progressBar.setVisibility(View.GONE);
+
+                        try {
+                            // Convert the response to a JSON object
+                            JSONObject obj = new JSONObject(response);
+
+                            // Get the user from the response
+                            JSONObject userJson = new JSONObject(response);
+                            JSONObject userInfoJson = new JSONObject(userJson.getString("info"));
+                            // Create the user to store locally
+                            User user = new User(
+                                    userJson.getString("_id"),
+                                    userJson.getString("username"),
+                                    userJson.getString("password"),
+                                    userInfoJson.getString("first_name"),
+                                    userInfoJson.getString("last_name"),
+                                    userInfoJson.getInt("age"),
+                                    userInfoJson.getString("sex"),
+                                    userInfoJson.getInt("height"),
+                                    userInfoJson.getInt("weight"),
+                                    userInfoJson.getBoolean("diabetic"),
+                                    userInfoJson.getString("health_focus")
+                            );
+
+                            // Store the user in shared preferences
+                            SharedPrefManager.getInstance(getApplicationContext()).userLogin(user);
+
+                            // Start the profile
+                            finish();
+                            startActivity(new Intent(getApplicationContext(), ProfileActivity.class));
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(getApplicationContext(), error.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                }) {
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                Map<String, String> params = new HashMap<>();
+                params.put("username", username);
+                params.put("password", password);
+                JSONObject info = new JSONObject();
+                try {
+                    info.put("first_name", first_name);
+                    info.put("last_name", last_name);
+                    info.put("age", age);
+                    info.put("sex", sex);
+                    info.put("height", height);
+                    info.put("weight", weight);
+                    info.put("diabetic", diabetic);
+                    info.put("health_focus", health_focus);
+                }
+                catch (JSONException e) {
+                    e.printStackTrace();
+
+                }
+                params.put("info", info.toString());
+                return params;
+            }
+        };
+
+        VolleySingleton.getInstance(this).addToRequestQueue(stringRequest);
+    }
+//        mTextMessage = (TextView) findViewById(R.id.message);
+//        BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
+//        navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
         //Starts app at profile input activity
 //        Intent intent = new Intent(this, com.example.diabetfix.profileInputActivity.class);
 //        startActivity(intent);
-    }
 
 }
