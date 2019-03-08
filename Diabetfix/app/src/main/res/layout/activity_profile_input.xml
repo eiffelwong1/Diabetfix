@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/nameView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="89dp"
+        android:layout_marginEnd="31dp"
+        android:text="@string/name"
+        app:layout_constraintEnd_toStartOf="@+id/nameInput"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/nameInput"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="4dp"
+        android:layout_marginBottom="15dp"
+        android:ems="10"
+        android:hint="@string/peter_the_anteater"
+        android:importantForAutofill="no"
+        android:inputType="textPersonName"
+        app:layout_constraintBottom_toTopOf="@+id/ageInput"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/nameView" />
+
+    <TextView
+        android:id="@+id/ageView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="17dp"
+        android:text="@string/age"
+        app:layout_constraintBaseline_toBaselineOf="@+id/ageInput"
+        app:layout_constraintEnd_toStartOf="@+id/ageInput"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <EditText
+        android:id="@+id/ageInput"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="21dp"
+        android:layout_marginBottom="13dp"
+        android:ems="10"
+        android:hint="@string/_22"
+        android:importantForAutofill="no"
+        android:inputType="number"
+        app:layout_constraintBottom_toTopOf="@+id/spinner"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/ageView" />
+
+    <TextView
+        android:id="@+id/sexView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="61dp"
+        android:layout_marginEnd="45dp"
+        android:text="@string/sex"
+        app:layout_constraintBaseline_toBaselineOf="@+id/spinner"
+        app:layout_constraintEnd_toStartOf="@+id/spinner"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Spinner
+        android:id="@+id/spinner"
+        android:layout_width="0dp"
+        android:layout_height="31dp"
+        android:layout_marginTop="82dp"
+        android:layout_marginEnd="66dp"
+        android:layout_marginBottom="82dp"
+        android:entries="@array/sexes"
+        android:spinnerMode="dropdown"
+        app:layout_constraintBottom_toBottomOf="@+id/heightInput"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/sexView"
+        app:layout_constraintTop_toBottomOf="@+id/nameView" />
+
+    <TextView
+        android:id="@+id/heightView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="24dp"
+        android:layout_marginBottom="43dp"
+        android:text="@string/height"
+        app:layout_constraintBottom_toTopOf="@+id/weightView"
+        app:layout_constraintEnd_toStartOf="@+id/heightInput"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <EditText
+        android:id="@+id/heightInput"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="3dp"
+        android:ems="10"
+        android:hint="@string/in_cm"
+        android:importantForAutofill="no"
+        android:inputType="number"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/heightView"
+        app:layout_constraintTop_toTopOf="@+id/heightView" />
+
+    <TextView
+        android:id="@+id/weightView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="320dp"
+        android:layout_marginEnd="23dp"
+        android:text="@string/weight"
+        app:layout_constraintEnd_toStartOf="@+id/weightInput"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/weightInput"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="17dp"
+        android:layout_marginEnd="5dp"
+        android:ems="10"
+        android:hint="@string/in_lb"
+        android:importantForAutofill="no"
+        android:inputType="number"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/weightView"
+        app:layout_constraintTop_toBottomOf="@+id/heightInput" />
+
+    <Button
+        android:id="@+id/saveProfile"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="13dp"
+        android:layout_marginEnd="8dp"
+        android:onClick="saveButton"
+        android:text="@string/save"
+        app:layout_constraintEnd_toEndOf="@+id/weightInput"
+        app:layout_constraintTop_toBottomOf="@+id/weightInput" />
+
+</android.support.constraint.ConstraintLayout>
