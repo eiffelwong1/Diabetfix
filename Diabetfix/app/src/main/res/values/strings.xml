@@ -14,6 +14,17 @@
     <string name="in_lb">in lb</string>
     <string name="save">Save</string>
 
+    <string name="username">USERNAME: </string>
+    <string name="password">PASSWORD: </string>
+    <string name="log_in">Log In</string>
+    <string name="create_account">Don\'t have an account? Sign up here</string>
+
+    <string name="glucose">Glucose</string>
+    <string name="food">Food</string>
+    <string name="exercise">Exercise</string>
+    <string name="journal">Journal</string>
+    <string name="add_food">Add Food</string>
+
     <string-array name="sexes">
         <item>Male</item>
         <item>Female</item>
