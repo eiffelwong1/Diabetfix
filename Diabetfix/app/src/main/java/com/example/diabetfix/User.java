@@ -1,7 +1,12 @@
 package com.example.diabetfix;
 
+import android.util.Log;
+
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.ArrayList;
 
 enum sex_options {MALE, FEMALE, OTHER;}
 enum healthFocusOptions {ACTIVITY, DIET, BOTH;}
@@ -10,18 +15,20 @@ public class User {
     protected String username, password;
     protected JSONObject info = new JSONObject();
 
-    private String id;
-    private JSONObject data;
+    private String token;
+    protected JSONObject data = new JSONObject();
 
-    public User( String inputId, String inputUsername, String inputPassword,
+    public User( String token, String inputUsername, String inputPassword,
                 String fName, String lName,
                 int inputAge, String inputSex,
                 int inputHeight, int inputWeight,
-                boolean diabeticStatus, String inputFocus) {
+                boolean diabeticStatus, String inputFocus,
+                 String userActivities, String userGlucoseLevels, String userFood) {
         this.username = inputUsername;
         this.password = inputPassword;
-        this.id = inputId;
+        this.token = token;
         try {
+            // Populate info obj
             this.info.put("first_name", fName);
             this.info.put("last_name", lName);
             this.info.put("age", inputAge);
@@ -30,28 +37,17 @@ public class User {
             this.info.put("weight", inputWeight);
             this.info.put("diabetic", diabeticStatus);
             this.info.put("health_focus", inputFocus);
-        }
-        catch (JSONException e) {
+            // Populate data obj
+            this.data.put("activities", userActivities);
+            this.data.put("glucose_levels", userGlucoseLevels);
+            this.data.put("food", userFood);
+        } catch (JSONException e) {
             System.out.println(e);
         }
-        this.data = new JSONObject();
-//        this.username = inputUsername;
-//        this.password = inputPassword;
-//        this.first_name = fName;
-//        this.last_name = lName;
-//        this.age = inputAge;
-//        this.sex = inputSex;
-//        this.height = inputHeight;
-//        this.weight = inputWeight;
-//        this.isDiabetic = diabeticStatus;
-//        this.healthFocus = inputFocus;
     }
 
-//    protected void setId(String inputId) {
-//        this.id = inputId;
-//    }
     // Get methods
-    public String getId() { return this.id; }
+    public String getToken() { return this.token; }
     public String getUsername() { return this.username; }
     public String getPassword() { return this.password; }
     public String getFName() {
@@ -142,4 +138,36 @@ public class User {
         return healthFocus;
     }
 
+    public String getActivities() {
+        String activities = "";
+        try {
+            activities = this.data.getString("activities");
+        }
+        catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return activities;
+    }
+
+    public String getGlucoseLevels() {
+        String glucoseLevels = "";
+        try {
+            glucoseLevels = this.data.getString("glucose_levels");
+        }
+        catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return glucoseLevels;
+    }
+
+    public String getFood() {
+        String food = "";
+        try {
+            food = this.data.getString("food");
+        }
+        catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return food;
+    }
 }

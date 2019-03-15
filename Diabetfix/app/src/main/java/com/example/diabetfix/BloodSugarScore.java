@@ -1,3 +1,5 @@
+package com.example.diabetfix;
+
 public class BloodSugarScore {
 	public BloodSugarScore(){		
 	}
@@ -14,7 +16,6 @@ public class BloodSugarScore {
 			return (int)(blood_sugar/7.5);
 		}
 		return 0;
-		
 	}
 	
 	public static void main (String[] args) {

@@ -194,17 +194,20 @@ public class MainActivity extends AppCompatActivity {
                         progressBar.setVisibility(View.GONE);
 
                         try {
-                            // Convert the response to a JSON object
-                            JSONObject obj = new JSONObject(response);
-
+                            // Get the response
+                            JSONObject responseJson = new JSONObject(response);
                             // Get the user from the response
-                            JSONObject userJson = new JSONObject(response);
+                            JSONObject userJson = responseJson.getJSONObject("user");
+                            // Get the info object
                             JSONObject userInfoJson = new JSONObject(userJson.getString("info"));
+                            // Get the data object
+                            JSONObject userDataJson = new JSONObject(userJson.getString("data"));
                             // Create the user to store locally
                             User user = new User(
-                                    userJson.getString("_id"),
+                                    responseJson.getString("token"),
                                     userJson.getString("username"),
                                     userJson.getString("password"),
+
                                     userInfoJson.getString("first_name"),
                                     userInfoJson.getString("last_name"),
                                     userInfoJson.getInt("age"),
@@ -212,7 +215,11 @@ public class MainActivity extends AppCompatActivity {
                                     userInfoJson.getInt("height"),
                                     userInfoJson.getInt("weight"),
                                     userInfoJson.getBoolean("diabetic"),
-                                    userInfoJson.getString("health_focus")
+                                    userInfoJson.getString("health_focus"),
+
+                                    userDataJson.getString("activities"),
+                                    userDataJson.getString("glucose_levels"),
+                                    userDataJson.getString("food")
                             );
 
                             // Store the user in shared preferences

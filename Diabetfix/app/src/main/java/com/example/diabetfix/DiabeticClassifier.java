@@ -1,3 +1,5 @@
+package com.example.diabetfix;
+
 class DiabeticClassifier {
     public static int predict_0(double[] features) {
         int[] classes = new int[2];
