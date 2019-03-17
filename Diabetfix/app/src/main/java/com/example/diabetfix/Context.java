@@ -452,7 +452,24 @@ public class Context {
         int hour = parseHour(currentTime);
         return suggestActivity(hour, v);
     }
-
+    
+    static String notifyUserHealth(int healthScore)
+    {
+        if (healthScore > 10 || healthScore < 0)
+            return "Error notifyUserHealth(): invalid input";
+        String res = "You are in a ";
+        String healthState = determineHealthStateLevel(healthScore);
+        if (healthState.equals("good"))
+            return res + "good heath state.";
+        else if (healthState.equals("medium"))
+        {
+            return res + "regular health state.";
+        }
+        else if (healthState.equals("severe"))
+            return res + " severe health state.";
+        else
+            return "Error notifyUserHealth(): invalid input";
+    }
     //recommend food
     static String makeFoodRecommendation(int healthScore, boolean haveDiabetes, Vector<Map<String, Integer>> breakfast,
                                          Vector<Map<String, Integer>> lunch, Vector<Map<String, Integer>> dinner,
