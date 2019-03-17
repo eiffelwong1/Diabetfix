@@ -4,10 +4,29 @@
     android:layout_height="match_parent">
 
     <TextView
+        android:id="@+id/carbsRecommendationText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerInParent="true"
+        android:layout_marginTop="15dp"
+        android:text="@string/recommended_carb_intake" />
+
+    <TextView
         android:id="@+id/carbsRecommendation"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true" />
+        android:layout_centerInParent="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="35dp"/>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/foodRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="596dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="84dp" />
 
     <Button
         android:id="@+id/addFoodLog"
@@ -15,6 +34,5 @@
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:onClick="onAddFood"
         android:text="@string/add_food" />
 </RelativeLayout>
