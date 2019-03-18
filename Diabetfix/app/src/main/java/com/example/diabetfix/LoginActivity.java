@@ -117,7 +117,7 @@ public class LoginActivity extends AppCompatActivity {
 
                             // Start the profile
                             finish();
-                            startActivity(new Intent(getApplicationContext(), ProfileActivity.class));
+                            startActivity(new Intent(getApplicationContext(), HomeActivity.class));
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }

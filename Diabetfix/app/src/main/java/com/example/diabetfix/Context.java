@@ -71,6 +71,7 @@ public class Context {
     }
     static void parseFood(String jsonStr)
     {
+
         JsonParser jsonParser = new JsonParser();
         JsonArray arrayFromString = jsonParser.parse(jsonStr).getAsJsonArray();
         for (int i = 0; i < arrayFromString.size(); ++i)
@@ -79,6 +80,8 @@ public class Context {
             String foodName = obj.get("name").getAsString();
             boolean hc = obj.get("high_carbs").getAsBoolean();
             String time = obj.get("time").toString();
+
+
         }
     }
 
@@ -89,7 +92,7 @@ public class Context {
         for (int i = 0; i < arrayFromString.size(); ++i)
         {
             JsonObject obj = arrayFromString.get(i).getAsJsonObject();
-            String glucose = obj.get("glucose_level").toString();
+            String glucose = obj.get("level").toString();
             String time = obj.get("time").toString();
         }
     }

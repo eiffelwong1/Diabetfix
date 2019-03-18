@@ -20,6 +20,9 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.mongodb.lang.Nullable;
 
 import java.util.ArrayList;
@@ -46,10 +49,10 @@ public class FoodFragment extends Fragment {
         user = SharedPrefManager.getInstance(getContext()).getUser();
 
         //Input here the number for recommended carbs intake
-        TextView carbText = (TextView) view.findViewById(R.id.carbsRecommendation);
+        TextView carbText = view.findViewById(R.id.carbsRecommendation);
         carbText.setText("10");
 
-        Button btn = (Button) view.findViewById(R.id.addFoodLog);
+        Button btn = view.findViewById(R.id.addFoodLog);
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -57,21 +60,19 @@ public class FoodFragment extends Fragment {
             }
         });
 
-        //Debugging populate
-        //Log.d("zzz", "before parsing food");
-        //Log.d("zzz", user.getFood());
+        parseFood(user.getFood());
 
-        names.add("Chicken");
-        names.add("Broccoli");
-        names.add("Rice");
-
-        carbBools.add(false);
-        carbBools.add(false);
-        carbBools.add(true);
-
-        loggedTimes.add(11);
-        loggedTimes.add(11);
-        loggedTimes.add(11);
+//        names.add("Chicken");
+//        names.add("Broccoli");
+//        names.add("Rice");
+//
+//        carbBools.add(false);
+//        carbBools.add(false);
+//        carbBools.add(true);
+//
+//        loggedTimes.add(11);
+//        loggedTimes.add(11);
+//        loggedTimes.add(11);
 
         initRecyclerView(view);
 
@@ -182,6 +183,7 @@ public class FoodFragment extends Fragment {
                     carbBools.add(isHighInCarbs);
 
 
+
                     Toast.makeText(getActivity(), name + " successfully logged", Toast.LENGTH_LONG).show();
                     dialog.cancel();
 
@@ -210,7 +212,24 @@ public class FoodFragment extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
     }
 
+    private void parseFood(String jsonStr)
+    {
 
+        JsonParser jsonParser = new JsonParser();
+        JsonArray arrayFromString = jsonParser.parse(jsonStr).getAsJsonArray();
+        for (int i = 0; i < arrayFromString.size(); ++i)
+        {
+            JsonObject obj = arrayFromString.get(i).getAsJsonObject();
+            String foodName = obj.get("name").getAsString();
+            boolean hc = obj.get("high_carbs").getAsBoolean();
+            int time = obj.get("time").getAsInt();
+
+            names.add(foodName);
+            carbBools.add(hc);
+            loggedTimes.add(time);
+
+        }
+    }
 
 
 }
