@@ -31,19 +31,19 @@ public class Context {
         check back on his health state later
 
      */
-    /*HELPER FUNCTIONS*/
-
+    /*HELPER FUNCTIONS AND DEBUG FUNCTIONS*/
+    static String jsonAcivityString()
+    {
+        return "[{\"kind\":running,\"duration\":30,\"time\":20},{\"kind\":jogging,\"duration\":30,\"time\":21},{\"kind\":running,\"duration\":30,\"time\":16}]";
+    }
+    static String jsonMeal()
+    {
+        return "[{\"name\":cheeseburger,\"high_carbs\":true,\"time\":20},{\"name\":saladwrap,\"high_carbs\":false,\"time\":7},{\"name\":saladwrap,\"high_carbs\":false,\"time\":7}]";
+    }
     /*parse json string to hour*/
     static int parseJsonHour(String str)
     {
-        Vector<String> v = new Vector<>();
-        StringTokenizer st = new StringTokenizer(str);
-        while(st.hasMoreTokens())
-        {
-            v.add(st.nextToken());
-        }
-        String hour = v.get(3).split(":")[0];
-        return Integer.parseInt(hour);
+        return Integer.parseInt(str);
     }
     /* Convert time into hour, return integer */
     static int parseHour(Date curTime)
@@ -59,6 +59,7 @@ public class Context {
         return Integer.parseInt(hour);
     }
 
+    //create random number for providing quotes
     static int mmakeRandomNumber()
     {
         Random rand = new Random();
@@ -92,7 +93,7 @@ public class Context {
         return v;
     }
     /*Create a data structure that represents the user's activity pattern, for debugging purpose*/
-    static Vector<Map<String, Integer>> createActivityPattern()
+    /*static Vector<Map<String, Integer>> createActivityPattern()
     {
         Vector<Map<String, Integer>> v = new Vector<Map<String, Integer>>(24);
         for (int i = 0; i < 24; ++i)
@@ -106,7 +107,7 @@ public class Context {
         for (int i = 0; i < 6; ++i)
             v.get(i).put("Weightlifting", 3);
         return v;
-    }
+    }*/
 
     /*convert meal pattern*/
     static Vector<Map<String, Integer>> createUserMealPattern(String str, String mealType)
@@ -121,6 +122,7 @@ public class Context {
             JsonObject obj = arrayFromString.get(i).getAsJsonObject();
             String foodName = obj.get("name").getAsString();
             boolean hc = obj.get("high_carbs").getAsBoolean();
+            //boolean hc = false;
             String time = obj.get("time").toString();
             int hour = parseJsonHour(time);
             if (determineMealTime(hour).equals(mealType))
@@ -147,7 +149,7 @@ public class Context {
         return v;
     }
     /*Create a data structure to represent user's meal pattern*/
-    static Vector<Map<String, Integer>> createMorningMeal()
+    /*static Vector<Map<String, Integer>> createMorningMeal()
     {
         Vector<Map<String, Integer>> v = new Vector<>(2);
         Map<String, Integer> mGood = new HashMap<>();
@@ -159,9 +161,9 @@ public class Context {
         v.add(0,mGood);
         v.add(1, mBad);
         return v;
-    }
+    }*/
 
-    static Vector<Map<String, Integer>> createLunchMeal()
+    /*static Vector<Map<String, Integer>> createLunchMeal()
     {
         Vector<Map<String, Integer>> v = new Vector<>(2);
         Map<String, Integer> mGood = new HashMap<>();
@@ -173,9 +175,9 @@ public class Context {
         v.add(0,mGood);
         v.add(1, mBad);
         return v;
-    }
+    }*/
 
-    static Vector<Map<String, Integer>> createDinnerMeal()
+    /*static Vector<Map<String, Integer>> createDinnerMeal()
     {
         Vector<Map<String, Integer>> v = new Vector<>(2);
         Map<String, Integer> mGood = new HashMap<>();
@@ -187,8 +189,8 @@ public class Context {
         v.add(0,mGood);
         v.add(1, mBad);
         return v;
-    }
-    static Vector<Map<String, Integer>> createSnackMeal()
+    }*/
+    /*static Vector<Map<String, Integer>> createSnackMeal()
     {
         Vector<Map<String, Integer>> v = new Vector<>(2);
         Map<String, Integer> mGood = new HashMap<>();
@@ -200,7 +202,7 @@ public class Context {
         v.add(0,mGood);
         v.add(1, mBad);
         return v;
-    }
+    }*/
 
     /* Activities function */
 
@@ -209,7 +211,7 @@ public class Context {
     {
         String mostFrequentActivity = "";
         int frequency = -1;
-        for (HashMap.Entry<String, Integer> entry : v.get(hour-1).entrySet())
+        for (HashMap.Entry<String, Integer> entry : v.get(hour).entrySet())
         {
             if (entry.getValue() > frequency)
             {
@@ -220,7 +222,7 @@ public class Context {
         if (frequency != -1)
             return "Hey! It is time for: " + mostFrequentActivity.toUpperCase();
         else
-            return "Go for a walk, or do some exercise";
+            return "Go for a walk, or run or swim.";
     }
 
     /* Food part */
@@ -245,7 +247,7 @@ public class Context {
     one healthy option and one less healthy option
      */
 
-    static String chooseFoodBasedOnContext(int hour, boolean diabeticFlag, int healthState)
+    /*static String chooseFoodBasedOnContext(int hour, boolean diabeticFlag, int healthState)
     {
         Vector<Map<String, Integer>> breakfast = createMorningMeal();
         Vector<Map<String, Integer>> lunch = createLunchMeal();
@@ -262,7 +264,7 @@ public class Context {
             return "It's snack time.\n" + giveFoodRecommendation(diabeticFlag, healthState, snack);
         else
             return "chooseFoodBasedOnContext() Error: invalid inputs";
-    }
+    }*/
     /*given a health state score from 0 to 10, determine whether health level is good (7 - 10)
     medium (3 - 6) or severe (0 - 2)*/
     static String determineHealthStateLevel(int healthState)
@@ -365,6 +367,7 @@ public class Context {
             return mostFoodGood;
         return mostFoodGood + " or " + mostFoodBad;
     }
+
     static String createMotivationalQuote(int healthScore)
     {
         if (healthScore > 10 || healthScore < 0)
@@ -385,28 +388,34 @@ public class Context {
 
     }
 
-
+    //testing and debugging
     static int test_function(int a, int healthGoal)
     {
 
         Date currentTime = Calendar.getInstance().getTime();
-        Vector<Map<String, Integer>> l = createActivityPattern();
+        /*Vector<Map<String, Integer>> l = createActivityPattern();
         Vector<Map<String, Integer>> breakfast = createMorningMeal();
         Vector<Map<String, Integer>> lunch = createLunchMeal();
         Vector<Map<String, Integer>> dinner = createDinnerMeal();
-        Vector<Map<String, Integer>> snack = createSnackMeal();
+        Vector<Map<String, Integer>> snack = createSnackMeal();*/
+        Vector<Map<String, Integer>> activityPattern = createUserActivityPattern(jsonAcivityString());
+        Vector<Map<String, Integer>> mealPattern = createUserMealPattern(jsonMeal(),"breakfast");
 
         Log.d("testMyTag",((Date) currentTime).toString());
         Log.d("testMeal", determineMealTime(parseHour(currentTime)));
         Log.d("testHealth", determineHealthStateLevel(10));
-        Log.d("testVectorOfMap", l.get(1).get("Weightlifting").toString());
-        Log.d("testSuggestActivities", suggestActivity(parseHour(currentTime), l));
-        Log.d("testCreateMorningMeal", breakfast.get(1).get("Breakfast Burrito").toString());
+        //Log.d("testVectorOfMap", l.get(1).get("Weightlifting").toString());
+        //Log.d("testSuggestActivities", suggestActivity(parseHour(currentTime), l));
+        /*Log.d("testCreateMorningMeal", breakfast.get(1).get("Breakfast Burrito").toString());
         Log.d("testCreateLunchMeal", lunch.get(1).get("All You Can Eat KBBQ").toString());
         Log.d("testCreateDinnerMeal", dinner.get(0).get("Pan Seared Salmon").toString());
-        Log.d("testCreateSnackMeal", snack.get(1).get("Strawberry Cheesecake").toString());
+        Log.d("testCreateSnackMeal", snack.get(1).get("Strawberry Cheesecake").toString());*/
         //Log.d("testGiveFoodRecom", giveFoodRecommendation(false, 0, breakfast));
-        Log.d("testContextRecom", chooseFoodBasedOnContext(parseHour(currentTime),false,0));
+        //Log.d("testContextRecom", chooseFoodBasedOnContext(parseHour(currentTime),false,0));
+        Log.d("testActivityPattern", Boolean.toString(activityPattern.get(16).containsKey("running")));
+        Log.d("testMealPattern", Boolean.toString(mealPattern.get(0).containsKey("saladwrap")));
+        Log.d("testValueInMealPattern", Integer.toString(mealPattern.get(0).get("saladwrap")));
+        Log.d("recoActivity", makeActivityRecommendation(activityPattern));
 
         //Log.d("testSuggestActivity", suggestActivity(parseHour(currentTime), v));
         Context.parseHour(currentTime);
@@ -452,7 +461,7 @@ public class Context {
         int hour = parseHour(currentTime);
         return suggestActivity(hour, v);
     }
-    
+
     static String notifyUserHealth(int healthScore)
     {
         if (healthScore > 10 || healthScore < 0)
@@ -493,8 +502,4 @@ public class Context {
     {
         return giveMotivationalQuote(healthScore);
     }
-
-
-
-
 }
