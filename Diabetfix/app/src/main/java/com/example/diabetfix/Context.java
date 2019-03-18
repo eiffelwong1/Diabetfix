@@ -1,12 +1,19 @@
 package com.example.diabetfix;
 import android.util.Log;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.StringTokenizer;
 import java.util.Vector;
+
+import java.util.Random;
 
 
 public class Context {
@@ -17,23 +24,27 @@ public class Context {
         exercise, through diet or both.
         User's data will be retrieved from the data base and be stored in a data structure for
         computation.
-        We will consider user's location to give recommendations, check for the
-        if the user have poor exercise score, provide them with walking advice, else don't advice
-        have a flag to determine if a person is diabetic, if user isn't diabetic but in an extreme
-        state, suggest more exercise
 
         If user does not have diabetes but have a high risk score, warn user THAT THEY MIGHT
         HAVE DIABETES, recommend healthy diet and exercise
         If user has diabetes and also have high risk score, tell them to inject insulin and
         check back on his health state later
 
-        Questions to ask the team:
-        Classify food item into 2 types (diabetic friendly and diabetic non friendly) so that
-        when the health risk is high, recommend food that is less sugar content.
-            -Have the user input what type of food
      */
-    /* Helper functions and code to create data structure for DEBUGGING*/
-
+    /*HELPER FUNCTIONS AND DEBUG FUNCTIONS*/
+    static String jsonAcivityString()
+    {
+        return "[{\"kind\":running,\"duration\":30,\"time\":20},{\"kind\":jogging,\"duration\":30,\"time\":21},{\"kind\":running,\"duration\":30,\"time\":16}]";
+    }
+    static String jsonMeal()
+    {
+        return "[{\"name\":cheeseburger,\"high_carbs\":true,\"time\":20},{\"name\":saladwrap,\"high_carbs\":false,\"time\":7},{\"name\":saladwrap,\"high_carbs\":false,\"time\":7}]";
+    }
+    /*parse json string to hour*/
+    static int parseJsonHour(String str)
+    {
+        return Integer.parseInt(str);
+    }
     /* Convert time into hour, return integer */
     static int parseHour(Date curTime)
     {
@@ -45,12 +56,44 @@ public class Context {
             v.add(st.nextToken());
         }
         String hour = v.get(3).split(":")[0];
-        Log.d("outputHour", hour);
         return Integer.parseInt(hour);
     }
 
+    //create random number for providing quotes
+    static int mmakeRandomNumber()
+    {
+        Random rand = new Random();
+        int randInt = rand.nextInt(3);
+        return randInt;
+    }
+
+    /*Convert json string to activity pattern*/
+    static Vector<Map<String, Integer>> createUserActivityPattern(String str)
+    {
+        Vector<Map<String, Integer>> v = new Vector<Map<String, Integer>>(24);
+        JsonParser jsonParser = new JsonParser();
+        JsonArray arrayFromString = jsonParser.parse(str).getAsJsonArray();
+        for (int i = 0; i < 24; ++i)
+        {
+            Map<String, Integer> m = new HashMap<>();
+            v.add(m);
+        }
+        for (int i = 0; i < arrayFromString.size(); ++i)
+        {
+            JsonObject obj = arrayFromString.get(i).getAsJsonObject();
+            String activityName = obj.get("kind").getAsString();
+            String time = obj.get("time").getAsString();
+            //int duration = obj.get("duration").getAsInt();
+            int hour = parseJsonHour(time);
+            if (!v.get(hour).containsKey(activityName))
+                v.get(hour).put(activityName, 1);
+            else
+                v.get(hour).put(activityName, v.get(hour).get(activityName) + 1);
+        }
+        return v;
+    }
     /*Create a data structure that represents the user's activity pattern, for debugging purpose*/
-    static Vector<Map<String, Integer>> createActivityPattern()
+    /*static Vector<Map<String, Integer>> createActivityPattern()
     {
         Vector<Map<String, Integer>> v = new Vector<Map<String, Integer>>(24);
         for (int i = 0; i < 24; ++i)
@@ -64,10 +107,49 @@ public class Context {
         for (int i = 0; i < 6; ++i)
             v.get(i).put("Weightlifting", 3);
         return v;
-    }
+    }*/
 
+    /*convert meal pattern*/
+    static Vector<Map<String, Integer>> createUserMealPattern(String str, String mealType)
+    {
+        Vector<Map<String, Integer>> v = new Vector<>(2);
+        Map<String, Integer> mGood = new HashMap<>();
+        Map<String, Integer> mBad = new HashMap<>();
+        JsonParser jsonParser = new JsonParser();
+        JsonArray arrayFromString = jsonParser.parse(str).getAsJsonArray();
+        for (int i = 0; i < arrayFromString.size(); ++i)
+        {
+            JsonObject obj = arrayFromString.get(i).getAsJsonObject();
+            String foodName = obj.get("name").getAsString();
+            boolean hc = obj.get("high_carbs").getAsBoolean();
+            //boolean hc = false;
+            String time = obj.get("time").toString();
+            int hour = parseJsonHour(time);
+            if (determineMealTime(hour).equals(mealType))
+            {
+                if (!hc)
+                {
+                    if (!mGood.containsKey(foodName))
+                        mGood.put(foodName, 1);
+                    else
+                        mGood.put(foodName, mGood.get(foodName) + 1);
+                }
+                else
+                {
+                    if (!mBad.containsKey(foodName))
+                        mBad.put(foodName, 1);
+                    else
+                        mBad.put(foodName, mBad.get(foodName) + 1);
+                }
+            }
+
+        }
+        v.add(0,mGood);
+        v.add(1, mBad);
+        return v;
+    }
     /*Create a data structure to represent user's meal pattern*/
-    static Vector<Map<String, Integer>> createMorningMeal()
+    /*static Vector<Map<String, Integer>> createMorningMeal()
     {
         Vector<Map<String, Integer>> v = new Vector<>(2);
         Map<String, Integer> mGood = new HashMap<>();
@@ -79,9 +161,9 @@ public class Context {
         v.add(0,mGood);
         v.add(1, mBad);
         return v;
-    }
+    }*/
 
-    static Vector<Map<String, Integer>> createLunchMeal()
+    /*static Vector<Map<String, Integer>> createLunchMeal()
     {
         Vector<Map<String, Integer>> v = new Vector<>(2);
         Map<String, Integer> mGood = new HashMap<>();
@@ -93,9 +175,9 @@ public class Context {
         v.add(0,mGood);
         v.add(1, mBad);
         return v;
-    }
+    }*/
 
-    static Vector<Map<String, Integer>> createDinnerMeal()
+    /*static Vector<Map<String, Integer>> createDinnerMeal()
     {
         Vector<Map<String, Integer>> v = new Vector<>(2);
         Map<String, Integer> mGood = new HashMap<>();
@@ -107,8 +189,8 @@ public class Context {
         v.add(0,mGood);
         v.add(1, mBad);
         return v;
-    }
-    static Vector<Map<String, Integer>> createSnackMeal()
+    }*/
+    /*static Vector<Map<String, Integer>> createSnackMeal()
     {
         Vector<Map<String, Integer>> v = new Vector<>(2);
         Map<String, Integer> mGood = new HashMap<>();
@@ -120,7 +202,7 @@ public class Context {
         v.add(0,mGood);
         v.add(1, mBad);
         return v;
-    }
+    }*/
 
     /* Activities function */
 
@@ -129,7 +211,7 @@ public class Context {
     {
         String mostFrequentActivity = "";
         int frequency = -1;
-        for (HashMap.Entry<String, Integer> entry : v.get(hour-1).entrySet())
+        for (HashMap.Entry<String, Integer> entry : v.get(hour).entrySet())
         {
             if (entry.getValue() > frequency)
             {
@@ -140,7 +222,7 @@ public class Context {
         if (frequency != -1)
             return "Hey! It is time for: " + mostFrequentActivity.toUpperCase();
         else
-            return "Go for a walk, or do some exercise";
+            return "Go for a walk, or run or swim.";
     }
 
     /* Food part */
@@ -165,7 +247,7 @@ public class Context {
     one healthy option and one less healthy option
      */
 
-    static String chooseFoodBasedOnContext(int hour, boolean diabeticFlag, int healthState)
+    /*static String chooseFoodBasedOnContext(int hour, boolean diabeticFlag, int healthState)
     {
         Vector<Map<String, Integer>> breakfast = createMorningMeal();
         Vector<Map<String, Integer>> lunch = createLunchMeal();
@@ -182,7 +264,7 @@ public class Context {
             return "It's snack time.\n" + giveFoodRecommendation(diabeticFlag, healthState, snack);
         else
             return "chooseFoodBasedOnContext() Error: invalid inputs";
-    }
+    }*/
     /*given a health state score from 0 to 10, determine whether health level is good (7 - 10)
     medium (3 - 6) or severe (0 - 2)*/
     static String determineHealthStateLevel(int healthState)
@@ -286,32 +368,136 @@ public class Context {
         return mostFoodGood + " or " + mostFoodBad;
     }
 
+    static String createMotivationalQuote(int healthScore)
+    {
+        if (healthScore > 10 || healthScore < 0)
+            return "Error createMotivationalQuote(): invalid input";
+         int randomNum = mmakeRandomNumber();
+         String[] goodState = new String[]{"You can fix your body, your heart, your diabetes. In Korea, China, and India, there are people who do yoga. They go to the mountains and do breath-in, breath-out meditation. They can live 500 years and not get sick. Keeping their bodies for a long time is possible; even flying in the sky is possible. Seung Sahn\n",
+                 "Millions of Americans today are taking dietary supplements, practicing yoga and integrating other natural therapies into their lives. These are all preventive measures that will keep them out of the doctor's office and drive down the costs of treating serious problems like heart disease and diabetes. Andrew Weil\n",
+                 "People with high blood pressure, diabetes - those are conditions brought about by life style. If you change the life style, those conditions will leave. Dick Gregory\n"
+                 };
+        String[] badState = new String[]{"We're all moving at such a high rate that we have to grab the frozen dinners and the McDonald's. We can't make it a way of life - we have to get back to real, simple, clean good foods. It will save our lives on so many levels; not just spina bifida, but obesity, diabetes, everything. Food is our medicine. Nicole Ari Parker\n",
+                "Insulin is not a cure for diabetes; it is a treatment. It enables the diabetic to burn sufficient carbohydrates so that proteins and fats may be added to the diet in sufficient quantities to provide energy for the economic burdens of life. Frederick Banting\n",
+                "You can live with diabetes. It's not the worst thing to have, but you have to manage yourself and have some self control. Tony Rock\n"
+                };
+        if (healthScore > 5)
+            return goodState[randomNum];
+        else
+            return badState[randomNum];
 
+    }
+
+    //testing and debugging
     static int test_function(int a, int healthGoal)
     {
 
         Date currentTime = Calendar.getInstance().getTime();
-        Vector<Map<String, Integer>> l = createActivityPattern();
+        /*Vector<Map<String, Integer>> l = createActivityPattern();
         Vector<Map<String, Integer>> breakfast = createMorningMeal();
         Vector<Map<String, Integer>> lunch = createLunchMeal();
         Vector<Map<String, Integer>> dinner = createDinnerMeal();
-        Vector<Map<String, Integer>> snack = createSnackMeal();
+        Vector<Map<String, Integer>> snack = createSnackMeal();*/
+        Vector<Map<String, Integer>> activityPattern = createUserActivityPattern(jsonAcivityString());
+        Vector<Map<String, Integer>> mealPattern = createUserMealPattern(jsonMeal(),"breakfast");
 
-        Log.d("testMyTag",((Date) currentTime).toString());
-        Log.d("testMeal", determineMealTime(parseHour(currentTime)));
-        Log.d("testHealth", determineHealthStateLevel(10));
-        Log.d("testVectorOfMap", l.get(1).get("Weightlifting").toString());
-        Log.d("testSuggestActivities", suggestActivity(parseHour(currentTime), l));
-        Log.d("testCreateMorningMeal", breakfast.get(1).get("Breakfast Burrito").toString());
+        //Log.d("testVectorOfMap", l.get(1).get("Weightlifting").toString());
+        //Log.d("testSuggestActivities", suggestActivity(parseHour(currentTime), l));
+        /*Log.d("testCreateMorningMeal", breakfast.get(1).get("Breakfast Burrito").toString());
         Log.d("testCreateLunchMeal", lunch.get(1).get("All You Can Eat KBBQ").toString());
         Log.d("testCreateDinnerMeal", dinner.get(0).get("Pan Seared Salmon").toString());
-        Log.d("testCreateSnackMeal", snack.get(1).get("Strawberry Cheesecake").toString());
+        Log.d("testCreateSnackMeal", snack.get(1).get("Strawberry Cheesecake").toString());*/
         //Log.d("testGiveFoodRecom", giveFoodRecommendation(false, 0, breakfast));
-        Log.d("testContextRecom", chooseFoodBasedOnContext(parseHour(currentTime),false,0));
+        //Log.d("testContextRecom", chooseFoodBasedOnContext(parseHour(currentTime),false,0));
+        Log.d("testActivityPattern", Boolean.toString(activityPattern.get(16).containsKey("running")));
+        Log.d("testMealPattern", Boolean.toString(mealPattern.get(0).containsKey("saladwrap")));
+        Log.d("testValueInMealPattern", Integer.toString(mealPattern.get(0).get("saladwrap")));
+        Log.d("recoActivity", makeActivityRecommendation(activityPattern));
+        Log.d("recoQuote", giveMotivationalQuote(10));
 
         //Log.d("testSuggestActivity", suggestActivity(parseHour(currentTime), v));
         Context.parseHour(currentTime);
         return a;
     }
 
+    /*FUNCTION CALLS USED IN THE APP*/
+
+    //load user activities
+    static Vector<Map<String, Integer>> loadUserActivityPattern(String jsonStr)
+    {
+        return createUserActivityPattern(jsonStr);
+    }
+
+    //load breakfast
+    static Vector<Map<String, Integer>> loadUserBreakfastPattern(String jsonStr)
+    {
+        return createUserMealPattern(jsonStr, "breakfast");
+    }
+
+    //load lunch
+    static Vector<Map<String, Integer>> loadUserLunchPattern(String jsonStr)
+    {
+        return createUserMealPattern(jsonStr, "lunch");
+    }
+
+    //load dinner
+    static Vector<Map<String, Integer>> loadUserDinnerPattern(String jsonStr)
+    {
+        return createUserMealPattern(jsonStr, "dinner");
+    }
+
+    //load snack
+    static Vector<Map<String, Integer>> loadUserSnackPattern(String jsonStr)
+    {
+        return createUserMealPattern(jsonStr, "snack");
+    }
+
+    //recommend exercise activity
+    static String makeActivityRecommendation(Vector<Map<String, Integer>> v)
+    {
+        Date currentTime = Calendar.getInstance().getTime();
+        int hour = parseHour(currentTime);
+        return suggestActivity(hour, v);
+    }
+
+    static String notifyUserHealth(int healthScore)
+    {
+        if (healthScore > 10 || healthScore < 0)
+            return "Error notifyUserHealth(): invalid input";
+        String res = "You are in a ";
+        String healthState = determineHealthStateLevel(healthScore);
+        if (healthState.equals("good"))
+            return res + "good heath state.";
+        else if (healthState.equals("medium"))
+        {
+            return res + "regular health state.";
+        }
+        else if (healthState.equals("severe"))
+            return res + " severe health state.";
+        else
+            return "Error notifyUserHealth(): invalid input";
+    }
+    //recommend food
+    static String makeFoodRecommendation(int healthScore, boolean haveDiabetes, Vector<Map<String, Integer>> breakfast,
+                                         Vector<Map<String, Integer>> lunch, Vector<Map<String, Integer>> dinner,
+                                         Vector<Map<String, Integer>> snack)
+    {
+        Date currentTime = Calendar.getInstance().getTime();
+        int hour = parseHour(currentTime);
+        if (determineMealTime(hour).equals("breakfast"))
+            return "It is breakfast time. " + giveFoodRecommendation(haveDiabetes, healthScore, breakfast);
+        else if (determineMealTime(hour).equals("lunch"))
+            return "It is lunch time. " + giveFoodRecommendation(haveDiabetes, healthScore, lunch);
+        else if (determineMealTime(hour).equals("dinner"))
+            return "It is dinner time. " + giveFoodRecommendation(haveDiabetes, healthScore, dinner);
+        else if (determineMealTime(hour).equals("snack"))
+            return "It is snack time. " + giveFoodRecommendation(haveDiabetes, healthScore, snack);
+        else return "Error makeFoodRecommendation(): invalid input.";
+    }
+
+    //give motivational quotes
+    static String giveMotivationalQuote(int healthScore)
+    {
+        return createMotivationalQuote(healthScore);
+    }
 }

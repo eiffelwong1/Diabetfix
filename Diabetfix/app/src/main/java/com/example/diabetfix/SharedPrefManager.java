@@ -2,6 +2,7 @@ package com.example.diabetfix;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.util.Log;
 
 public class SharedPrefManager {
     // constants
@@ -81,6 +82,30 @@ public class SharedPrefManager {
                 sharedPreferences.getString(KEY_GLUCOSELEVELS, null),
                 sharedPreferences.getString(KEY_FOOD, null)
         );
+    }
+
+    public void addActivity(User user, String activity) {
+        SharedPreferences sharedPreferences = mContext.getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        user.addActivity(activity);
+        editor.putString(KEY_ACTIVITIES, user.getActivities());
+        editor.apply();
+    }
+
+    public void addGlucoseLevel(User user, String glucoseLevel) {
+        SharedPreferences sharedPreferences = mContext.getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        user.addGlucoseLevel(glucoseLevel);
+        editor.putString(KEY_GLUCOSELEVELS, user.getGlucoseLevels());
+        editor.apply();
+    }
+
+    public void addFood(User user, String food) {
+        SharedPreferences sharedPreferences = mContext.getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        user.addFood(food);
+        editor.putString(KEY_FOOD, user.getFood());
+        editor.apply();
     }
 
     public void logout() {

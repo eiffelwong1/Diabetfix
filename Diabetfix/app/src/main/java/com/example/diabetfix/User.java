@@ -170,4 +170,56 @@ public class User {
         }
         return food;
     }
+
+    // Set methods
+    public void addActivity(String activity) {
+        try {
+            String currentActivities = this.data.getString("activities");
+            String updatedActivities = prepDataForAdd(currentActivities);
+            updatedActivities = updatedActivities.concat(activity);
+            updatedActivities = updatedActivities.concat("]");
+            this.data.put("activities", updatedActivities);
+            System.out.println(this.data.get("activities"));
+        }
+        catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void addGlucoseLevel(String glucoseLevel) {
+        try {
+            String currentGlucoseLevels = this.data.getString("glucose_levels");
+            String updatedGlucoseLevels = prepDataForAdd(currentGlucoseLevels);
+            updatedGlucoseLevels = updatedGlucoseLevels.concat(glucoseLevel);
+            updatedGlucoseLevels = updatedGlucoseLevels.concat("]");
+            this.data.put("glucose_levels", updatedGlucoseLevels);
+            System.out.println(this.data.get("glucose_levels"));
+        }
+        catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void addFood(String food) {
+        try {
+            String currentFood = this.data.getString("food");
+            String updatedFood = prepDataForAdd(currentFood);
+            updatedFood = updatedFood.concat(food);
+            updatedFood = updatedFood.concat("]");
+            this.data.put("food", updatedFood);
+            System.out.println(this.data.get("food"));
+        }
+        catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private String prepDataForAdd(String data) {
+        String formattedData = data.substring(0, data.length()-1);
+        // Data is not empty, so add a comma
+        if (!data.equals("[]")) {
+            formattedData = formattedData.concat(",");
+        }
+        return formattedData;
+    }
 }

@@ -3,6 +3,7 @@ package com.example.diabetfix;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -43,12 +44,12 @@ public class ProfileActivity extends AppCompatActivity {
         // Set the values to the textviews
         textViewId.setText(String.valueOf("Token"));
         textViewUsername.setText(user.getUsername());
-        textViewActivities.setText(user.getActivities());
+        //textViewActivities.setText(user.getActivities());
 
         findViewById(R.id.buttonAddActivity).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                addActivity(user.getUsername(), user.getToken());
+                addActivity(user.getUsername(), user.getToken(), user);
             }
         });
 
@@ -63,7 +64,7 @@ public class ProfileActivity extends AppCompatActivity {
         });
     }
 
-    private void addActivity (final String username, final String token) {
+    private void addActivity (final String username, final String token, final User user) {
         StringRequest stringRequest = new StringRequest(Request.Method.POST, URLs.URL_ADD_ACTIVITY,
                 new Response.Listener<String>() {
                     @Override
@@ -71,11 +72,11 @@ public class ProfileActivity extends AppCompatActivity {
 
                         try {
                             // Get the user from the response
-                            JSONObject userJson = new JSONObject(response);
-                            // Get the data object
-                            JSONObject userDataJson = new JSONObject(userJson.getString("data"));
+                            JSONObject responseJson = new JSONObject(response);
+                            Log.d("loginresponse", responseJson.toString());
 
-                            // Store the user in shared preferences
+                            // Store the activity json response into shared preferences
+                            SharedPrefManager.getInstance(getApplicationContext()).addActivity(user, responseJson.toString());
 
                             // Start the profile
                             finish();
