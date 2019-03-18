@@ -4,6 +4,9 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.text.InputFilter;
 import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -19,15 +22,28 @@ import android.widget.Toast;
 
 import com.mongodb.lang.Nullable;
 
+import java.util.ArrayList;
+
 public class FoodFragment extends Fragment {
 
     private boolean isHighInCarbs = true;
+
+    private ArrayList<String> names = new ArrayList<>();
+    private ArrayList<Boolean> carbBools = new ArrayList<>();
+    private ArrayList<Integer> loggedTimes = new ArrayList<>();
+
+    //Don't need to populate this one
+    private ArrayList<Integer> levelOrDuration = new ArrayList<>();
+
+    //Get current user
+    private User user;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState)
     {
         View view = inflater.inflate(R.layout.food_fragment, container, false);
+        user = SharedPrefManager.getInstance(getContext()).getUser();
 
         //Input here the number for recommended carbs intake
         TextView carbText = (TextView) view.findViewById(R.id.carbsRecommendation);
@@ -40,6 +56,24 @@ public class FoodFragment extends Fragment {
                 onAddFood(v);
             }
         });
+
+        //Debugging populate
+        //Log.d("zzz", "before parsing food");
+        //Log.d("zzz", user.getFood());
+
+        names.add("Chicken");
+        names.add("Broccoli");
+        names.add("Rice");
+
+        carbBools.add(false);
+        carbBools.add(false);
+        carbBools.add(true);
+
+        loggedTimes.add(11);
+        loggedTimes.add(11);
+        loggedTimes.add(11);
+
+        initRecyclerView(view);
 
         
         return view;
@@ -68,14 +102,19 @@ public class FoodFragment extends Fragment {
         layout.addView(foodName);
 
         final TextView timeLabel = new TextView(getActivity());
-        timeLabel.setText("Time eaten:");
+        timeLabel.setText("Hour eaten in military (0-23):");
         timeLabel.setLayoutParams(lp);
         layout.addView(timeLabel);
 
         final EditText time = new EditText(getActivity());
-        time.setHint("3:52");
-        time.setInputType(InputType.TYPE_CLASS_DATETIME);
+        time.setHint("14 (for 2pm)");
+        time.setInputType(InputType.TYPE_CLASS_NUMBER);
         time.setLayoutParams(lp);
+        //Make input limited to two digits
+        InputFilter[] FilterArray = new InputFilter[1];
+        FilterArray[0] = new InputFilter.LengthFilter(2);
+        time.setFilters(FilterArray);
+
         layout.addView(time);
 
         final TextView carbsLabel = new TextView(getActivity());
@@ -122,15 +161,33 @@ public class FoodFragment extends Fragment {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 String name = (foodName.getText().toString());
-                String foodTime = time.getText().toString();
-
-                //Use name, foodTime, and isHighInCarbs to enter into database
-
-                Toast.makeText(getActivity(), name + " successfully logged", Toast.LENGTH_LONG).show();
+                int foodTime = Integer.parseInt(time.getText().toString());
 
 
+                if (foodTime < 0 || foodTime > 23)
+                {
+                    Toast.makeText(getActivity(), foodTime + " is not valid. Please enter a number 0-23",
+                            Toast.LENGTH_LONG).show();
+                }
+                else if (name.isEmpty())
+                {
+                    Toast.makeText(getActivity(), "Please enter a name",
+                            Toast.LENGTH_LONG).show();
+                }
+                else
+                {
+                    //Use name, foodTime, and isHighInCarbs to enter into database
+                    names.add(name);
+                    loggedTimes.add(foodTime);
+                    carbBools.add(isHighInCarbs);
 
-                dialog.cancel();
+
+                    Toast.makeText(getActivity(), name + " successfully logged", Toast.LENGTH_LONG).show();
+                    dialog.cancel();
+
+                }
+
+
             }
         })
                 .setNegativeButton("Close", new DialogInterface.OnClickListener() {
@@ -144,6 +201,16 @@ public class FoodFragment extends Fragment {
         alert.setTitle("Log food");
         alert.show();
     }
+
+    private void initRecyclerView(View v)
+    {
+        RecyclerView recyclerView = v.findViewById(R.id.foodRecyclerView);
+        RecyclerViewAdapter adapter = new RecyclerViewAdapter(names, levelOrDuration, carbBools, loggedTimes, getActivity());
+        recyclerView.setAdapter(adapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+    }
+
+
 
 
 }
