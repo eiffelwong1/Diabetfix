@@ -58,6 +58,41 @@ public class Context {
         String hour = v.get(3).split(":")[0];
         return Integer.parseInt(hour);
     }
+    static void parseActivity(String jsonStr)
+    {
+        JsonParser jsonParser = new JsonParser();
+        JsonArray arrayFromString = jsonParser.parse(jsonStr).getAsJsonArray();
+        for (int i = 0; i < arrayFromString.size(); ++i) {
+            JsonObject obj = arrayFromString.get(i).getAsJsonObject();
+            String activityName = obj.get("kind").getAsString();
+            String time = obj.get("time").getAsString();
+            int duration = obj.get("duration").getAsInt();
+        }
+    }
+    static void parseFood(String jsonStr)
+    {
+        JsonParser jsonParser = new JsonParser();
+        JsonArray arrayFromString = jsonParser.parse(jsonStr).getAsJsonArray();
+        for (int i = 0; i < arrayFromString.size(); ++i)
+        {
+            JsonObject obj = arrayFromString.get(i).getAsJsonObject();
+            String foodName = obj.get("name").getAsString();
+            boolean hc = obj.get("high_carbs").getAsBoolean();
+            String time = obj.get("time").toString();
+        }
+    }
+
+    static void parseGlucose(String jsonStr)
+    {
+        JsonParser jsonParser = new JsonParser();
+        JsonArray arrayFromString = jsonParser.parse(jsonStr).getAsJsonArray();
+        for (int i = 0; i < arrayFromString.size(); ++i)
+        {
+            JsonObject obj = arrayFromString.get(i).getAsJsonObject();
+            String glucose = obj.get("glucose_level").toString();
+            String time = obj.get("time").toString();
+        }
+    }
 
     //create random number for providing quotes
     static int mmakeRandomNumber()
