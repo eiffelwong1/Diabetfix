@@ -15,8 +15,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -27,16 +25,14 @@ import com.mongodb.lang.Nullable;
 
 import java.util.ArrayList;
 
-public class FoodFragment extends Fragment {
+public class GlucoseFragment extends Fragment {
 
-    private boolean isHighInCarbs = true;
-
-    private ArrayList<String> names = new ArrayList<>();
-    private ArrayList<Boolean> carbBools = new ArrayList<>();
+    private ArrayList<Integer> glucoseLevels = new ArrayList<>();
     private ArrayList<Integer> loggedTimes = new ArrayList<>();
 
     //Don't need to populate these ones
-    private ArrayList<Integer> glucoseLevels = new ArrayList<>();
+    private ArrayList<Boolean> carbBools = new ArrayList<>();
+    private ArrayList<String> names = new ArrayList<>();
     private ArrayList<Integer> durations = new ArrayList<>();
 
     //Get current user
@@ -46,42 +42,30 @@ public class FoodFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState)
     {
-        View view = inflater.inflate(R.layout.food_fragment, container, false);
+        View view = inflater.inflate(R.layout.glucose_fragment, container, false);
         user = SharedPrefManager.getInstance(getContext()).getUser();
 
         //Input here the number for recommended carbs intake
-        TextView carbText = view.findViewById(R.id.carbsRecommendation);
-        carbText.setText("10");
+        TextView glucoseText = view.findViewById(R.id.glucoseScore);
+        glucoseText.setText("10");
 
-        Button btn = view.findViewById(R.id.addFoodLog);
+        Button btn = view.findViewById(R.id.addGlucoseLog);
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onAddFood(v);
+                onAddGlucose(v);
             }
         });
 
-        //parseFood(user.getFood());
-
-//        names.add("Chicken");
-//        names.add("Broccoli");
-//        names.add("Rice");
-//
-//        carbBools.add(false);
-//        carbBools.add(false);
-//        carbBools.add(true);
-//
-//        loggedTimes.add(11);
-//        loggedTimes.add(11);
-//        loggedTimes.add(11);
+        //parseGlucose(user.getGlucoseLevels());
 
         initRecyclerView(view);
 
-        
+
         return view;
     }
 
-    private void onAddFood(final View view)
+    private void onAddGlucose(final View view)
     {
         AlertDialog.Builder alertBuilder = new AlertDialog.Builder(getActivity());
         alertBuilder.setCancelable(false);
@@ -93,18 +77,20 @@ public class FoodFragment extends Fragment {
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.MATCH_PARENT);
 
-        final TextView foodLabel = new TextView(getActivity());
-        foodLabel.setText("Name:");
-        foodLabel.setLayoutParams(lp);
-        layout.addView(foodLabel);
+        final TextView glucoseLabel = new TextView(getActivity());
+        glucoseLabel.setText("Glucose Level:");
 
-        final EditText foodName = new EditText(getActivity());
-        foodName.setHint("Broccoli");
-        foodName.setLayoutParams(lp);
-        layout.addView(foodName);
+        glucoseLabel.setLayoutParams(lp);
+        layout.addView(glucoseLabel);
+
+        final EditText glucoseLevelText = new EditText(getActivity());
+        glucoseLevelText.setHint("100");
+        glucoseLevelText.setInputType(InputType.TYPE_CLASS_NUMBER);
+        glucoseLevelText.setLayoutParams(lp);
+        layout.addView(glucoseLevelText);
 
         final TextView timeLabel = new TextView(getActivity());
-        timeLabel.setText("Hour eaten in military time (0-23):");
+        timeLabel.setText("Hour logged in military time (0-23):");
         timeLabel.setLayoutParams(lp);
         layout.addView(timeLabel);
 
@@ -119,51 +105,19 @@ public class FoodFragment extends Fragment {
 
         layout.addView(time);
 
-        final TextView carbsLabel = new TextView(getActivity());
-        carbsLabel.setText("Food high in carbs: ");
-        carbsLabel.setLayoutParams(lp);
-        layout.addView(carbsLabel);
-
-        final RadioGroup rg = new RadioGroup(getActivity());
-        rg.setOrientation(RadioGroup.HORIZONTAL);
-
-        final RadioButton rb1 = new RadioButton(getActivity());
-        rb1.setText("True");
-        rb1.setId(view.getId());
-        final RadioButton rb2 = new RadioButton(getActivity());
-        rb2.setText("False");
-        rb1.setId(view.getId());
-
-        isHighInCarbs = true;
-
-        rg.addView(rb1);
-        rg.addView(rb2);
-        rg.check(rb1.getId());
-        layout.addView(rg);
-
-        rg.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener()
-        {
-
-            @Override
-            public void onCheckedChanged(RadioGroup group, int checkedId) {
-                for (int i = 0; i < group.getChildCount(); i++)
-                {
-                    RadioButton btn = (RadioButton) group.getChildAt(i);
-                    if (btn.getId() == checkedId)
-                    {
-                        isHighInCarbs = Boolean.parseBoolean(btn.getText().toString());
-                    }
-                }
-            }
-        });
-
         alertBuilder.setView(layout);
 
         alertBuilder.setPositiveButton("Add", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                String name = (foodName.getText().toString());
-                if (time.getText().toString().isEmpty())
+
+                if (glucoseLevelText.getText().toString().isEmpty())
+                {
+                    Toast.makeText(getActivity(), "Please enter a glucose level",
+                            Toast.LENGTH_LONG).show();
+                    dialog.cancel();
+                }
+                else if (time.getText().toString().isEmpty())
                 {
                     Toast.makeText(getActivity(), "Please enter a time",
                             Toast.LENGTH_LONG).show();
@@ -171,34 +125,26 @@ public class FoodFragment extends Fragment {
                 }
                 else
                 {
-                    int foodTime = Integer.parseInt(time.getText().toString());
+                    int glucoseLevel = Integer.parseInt(glucoseLevelText.getText().toString());
+                    int glucoseTime = Integer.parseInt(time.getText().toString());
 
-                    if (foodTime < 0 || foodTime > 23)
+
+                    if (glucoseTime < 0 || glucoseTime > 23)
                     {
-                        Toast.makeText(getActivity(), foodTime + " is not valid. Please enter a number 0-23",
-                                Toast.LENGTH_LONG).show();
-                    }
-                    else if (name.isEmpty())
-                    {
-                        Toast.makeText(getActivity(), "Please enter a name",
+                        Toast.makeText(getActivity(), glucoseTime + " is not valid. Please enter a number 0-23",
                                 Toast.LENGTH_LONG).show();
                     }
                     else
                     {
-                        //Use name, foodTime, isHighInCarbs and user to enter into database
-                        names.add(name);
-                        loggedTimes.add(foodTime);
-                        carbBools.add(isHighInCarbs);
+                        //Use glucoseTime, glucoseLevel and user to enter into database
+                        loggedTimes.add(glucoseTime);
+                        glucoseLevels.add(glucoseLevel);
 
-
-
-                        Toast.makeText(getActivity(), name + " successfully logged", Toast.LENGTH_LONG).show();
+                        Toast.makeText(getActivity(), glucoseLevel + " successfully logged", Toast.LENGTH_LONG).show();
                         dialog.cancel();
 
                     }
-
                 }
-
 
 
             }
@@ -211,37 +157,36 @@ public class FoodFragment extends Fragment {
                 });
 
         AlertDialog alert = alertBuilder.create();
-        alert.setTitle("Log food");
+        alert.setTitle("Log Glucose Level");
         alert.show();
     }
 
     private void initRecyclerView(View v)
     {
-        RecyclerView recyclerView = v.findViewById(R.id.foodRecyclerView);
+        RecyclerView recyclerView = v.findViewById(R.id.glucoseRecyclerView);
         RecyclerViewAdapter adapter = new RecyclerViewAdapter(names, glucoseLevels, durations,
                 carbBools, loggedTimes, getActivity());
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
     }
 
-    private void parseFood(String jsonStr)
+    private void parseGlucose(String jsonStr)
     {
-
         JsonParser jsonParser = new JsonParser();
         JsonArray arrayFromString = jsonParser.parse(jsonStr).getAsJsonArray();
         for (int i = 0; i < arrayFromString.size(); ++i)
         {
             JsonObject obj = arrayFromString.get(i).getAsJsonObject();
-            String foodName = obj.get("name").getAsString();
-            boolean hc = obj.get("high_carbs").getAsBoolean();
+            int glucose = obj.get("level").getAsInt();
             int time = obj.get("time").getAsInt();
 
-            names.add(foodName);
-            carbBools.add(hc);
+            glucoseLevels.add(glucose);
             loggedTimes.add(time);
-
         }
     }
+
+
+
 
 
 }

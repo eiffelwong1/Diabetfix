@@ -8,6 +8,7 @@
 
     <item
         android:id="@+id/nav_glucose"
+        android:icon="@drawable/blood_drop"
         android:title="@string/glucose" />
 
     <item

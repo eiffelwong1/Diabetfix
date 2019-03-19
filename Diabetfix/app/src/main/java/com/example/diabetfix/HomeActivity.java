@@ -20,6 +20,9 @@ public class HomeActivity extends AppCompatActivity {
                         case R.id.nav_home:
                             selectedFragment = new HomeFragment();
                             break;
+                        case R.id.nav_glucose:
+                            selectedFragment = new GlucoseFragment();
+                            break;
                         case R.id.nav_food:
                             selectedFragment = new FoodFragment();
                             break;

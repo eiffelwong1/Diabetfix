@@ -34,5 +34,5 @@
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:text="@string/add_food" />
+        android:text="@string/log_food" />
 </RelativeLayout>

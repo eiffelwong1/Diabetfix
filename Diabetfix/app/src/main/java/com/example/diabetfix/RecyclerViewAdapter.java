@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.text.Layout;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,17 +17,19 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     private static final String TAG = "RecyclerViewAdapter";
 
     private ArrayList<String> names = new ArrayList<>();
-    private ArrayList<Integer> levelOrDuration = new ArrayList<>();
+    private ArrayList<Integer> glucoseLevel = new ArrayList<>();
+    private ArrayList<Integer> durations = new ArrayList<>();
     private ArrayList<Boolean> carbBools = new ArrayList<>();
     private ArrayList<Integer> loggedTimes = new ArrayList<>();
 
 
     private Context mContext;
 
-    public RecyclerViewAdapter(ArrayList<String> names, ArrayList<Integer> levelorDuration,
+    public RecyclerViewAdapter(ArrayList<String> names, ArrayList<Integer> glucoseLevel, ArrayList<Integer> durations,
                                ArrayList<Boolean> carbBools, ArrayList<Integer> loggedTimes, Context mContext) {
         this.names = names;
-        this.levelOrDuration = levelorDuration;
+        this.glucoseLevel = glucoseLevel;
+        this.durations = durations;
         this.carbBools = carbBools;
         this.loggedTimes = loggedTimes;
         this.mContext = mContext;
@@ -43,13 +46,18 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     @Override
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int i) {
         viewHolder.time.setText(Integer.toString(loggedTimes.get(i)));
+
         if (names.size() > 0)
         {
             viewHolder.logName.setText(names.get(i));
         }
-        if (levelOrDuration.size() > 0)
+        if (glucoseLevel.size() > 0)
         {
-            viewHolder.glucoseLevel.setText(levelOrDuration.get(i));
+            viewHolder.glucoseLevel.setText(Integer.toString(glucoseLevel.get(i)));
+        }
+        if (durations.size() > 0)
+        {
+            viewHolder.exerciseDuration.setText(Integer.toString(durations.get(i)) + " minutes");
         }
         //Food log
         if (carbBools.size() > 0)
@@ -68,7 +76,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     @Override
     public int getItemCount() {
-        return names.size();
+        return loggedTimes.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder{
@@ -76,6 +84,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         TextView time;
         TextView highInCarbs;
         TextView glucoseLevel;
+        TextView exerciseDuration;
         RelativeLayout parentLayout;
 
         public ViewHolder(View itemView)
@@ -85,6 +94,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             time = itemView.findViewById(R.id.time);
             highInCarbs = itemView.findViewById(R.id.carbsBool);
             glucoseLevel = itemView.findViewById(R.id.glucose_level);
+            exerciseDuration = itemView.findViewById(R.id.duration);
             parentLayout = itemView.findViewById(R.id.parent_layout);
 
 

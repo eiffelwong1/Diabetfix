@@ -23,10 +23,12 @@
     <string name="food">Food</string>
     <string name="exercise">Exercise</string>
     <string name="journal">Journal</string>
-    <string name="add_food">Add Food</string>
     <string name="log_food">Log Food</string>
-    <string name="recommended_exercise_in_minutes">Recommended exercise in minutes</string>
+    <string name="log_exercise">Log Exercise</string>
+    <string name="log_glucose">Log Glucose Level</string>
+    <string name="exercise_score">Exercise Score: </string>
     <string name="recommended_carb_intake">Recommended carb intake</string>
+    <string name="glucose_score">Glucose Score: </string>
 
     <string-array name="sexes">
         <item>Male</item>
