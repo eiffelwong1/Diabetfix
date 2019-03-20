@@ -22,7 +22,7 @@ public class LogOutFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.home_fragment, container, false);
+        View view = inflater.inflate(R.layout.log_out_fragment, container, false);
 
         view.findViewById(R.id.logOut).setOnClickListener(new View.OnClickListener() {
             @Override
