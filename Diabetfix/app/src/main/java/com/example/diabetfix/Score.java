@@ -6,9 +6,14 @@ public class Score {
 
 	public static int getOverallScore(int num_of_pregnace, int height, int weight, int age,
 									  int mins_of_exercise, int bloodsugar){
-		return getBloodSugarScore(bloodsugar) +
+		int score = (getBloodSugarScore(bloodsugar) +
 				getExerciseScore(mins_of_exercise) -
-				getDiabeticRiskScore(num_of_pregnace, height, weight, age) * 5;
+				getDiabeticRiskScore(num_of_pregnace, height, weight, age) * 5) /2;
+		if(score > 0){
+			return score;
+		}else{
+			return 0;
+		}
 	}
 
 	public static int getDiabeticRiskScore(int num_of_pregnace, int height, int weight, int age) {

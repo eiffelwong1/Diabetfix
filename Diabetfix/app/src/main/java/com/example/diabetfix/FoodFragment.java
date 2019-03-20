@@ -71,7 +71,7 @@ public class FoodFragment extends Fragment {
         Vector<Map<String, Integer>> snack = Context.loadUserSnackPattern(jsonStr);
 
         TextView carbText = view.findViewById(R.id.carbsRecommendation);
-        carbText.setText(Context.notifyUserHealth(healthScore)+Context.makeFoodRecommendation(healthScore, haveDiabetes, breakfast, lunch, dinner, snack));
+        carbText.setText(Context.makeFoodRecommendation(healthScore, haveDiabetes, breakfast, lunch, dinner, snack));
 
         Button btn = view.findViewById(R.id.addFoodLog);
         btn.setOnClickListener(new View.OnClickListener() {

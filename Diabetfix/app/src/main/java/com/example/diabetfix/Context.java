@@ -43,7 +43,9 @@ public class Context {
     /*parse json string to hour*/
     static int parseJsonHour(String str)
     {
-        return Integer.parseInt(str);
+
+
+        return Integer.parseInt(str.substring(1, str.length() - 1));
     }
     /* Convert time into hour, return integer */
     static int parseHour(Date curTime)
@@ -65,7 +67,7 @@ public class Context {
         for (int i = 0; i < arrayFromString.size(); ++i) {
             JsonObject obj = arrayFromString.get(i).getAsJsonObject();
             String activityName = obj.get("kind").getAsString();
-            String time = obj.get("time").getAsString();
+            String time = obj.get("time").toString();
             int duration = obj.get("duration").getAsInt();
         }
     }
@@ -120,7 +122,7 @@ public class Context {
         {
             JsonObject obj = arrayFromString.get(i).getAsJsonObject();
             String activityName = obj.get("kind").getAsString();
-            String time = obj.get("time").getAsString();
+            String time = obj.get("time").toString();
             //int duration = obj.get("duration").getAsInt();
             int hour = parseJsonHour(time);
             if (!v.get(hour).containsKey(activityName))
