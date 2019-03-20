@@ -39,8 +39,8 @@ public class Score {
 		if(blood_sugar > 75 & blood_sugar < 115){
 			return 10;
 		}else if(blood_sugar >= 115 & blood_sugar <315) {
-			int differnce = (int) ((blood_sugar - 115)/20);
-			return 10 - differnce - 1;
+			int difference = (int) ((blood_sugar - 115)/20);
+			return 10 - difference - 1;
 		}else if (blood_sugar <= 75 & blood_sugar >= 0) {
 			return (int)(blood_sugar/7.5);
 		}
