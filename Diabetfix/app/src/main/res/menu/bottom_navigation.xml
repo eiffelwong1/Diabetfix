@@ -21,8 +21,8 @@
         android:title="@string/exercise" />
 
     <item
-        android:id="@+id/nav_journal"
+        android:id="@+id/nav_log_out"
         android:icon="@drawable/notebook"
-        android:title="@string/journal" />
+        android:title="@string/log_out" />
 
 </menu>

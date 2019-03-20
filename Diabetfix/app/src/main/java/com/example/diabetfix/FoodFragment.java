@@ -20,14 +20,24 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.mongodb.lang.Nullable;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.Vector;
+import java.util.HashMap;
+import java.util.Map;
 
 public class FoodFragment extends Fragment {
 
@@ -71,7 +81,7 @@ public class FoodFragment extends Fragment {
             }
         });
 
-        //parseFood(user.getFood());
+        parseFood(user.getFood());
 
 //        names.add("Chicken");
 //        names.add("Broccoli");
@@ -199,9 +209,8 @@ public class FoodFragment extends Fragment {
                         names.add(name);
                         loggedTimes.add(foodTime);
                         carbBools.add(isHighInCarbs);
-
-
-
+                        // Add food to database
+                        addFood(user.getUsername(), user.getToken(), user, name, isHighInCarbs, foodTime);
                         Toast.makeText(getActivity(), name + " successfully logged", Toast.LENGTH_LONG).show();
                         dialog.cancel();
 
@@ -242,6 +251,7 @@ public class FoodFragment extends Fragment {
         for (int i = 0; i < arrayFromString.size(); ++i)
         {
             JsonObject obj = arrayFromString.get(i).getAsJsonObject();
+            System.out.println(obj);
             String foodName = obj.get("name").getAsString();
             boolean hc = obj.get("high_carbs").getAsBoolean();
             int time = obj.get("time").getAsInt();
@@ -251,6 +261,60 @@ public class FoodFragment extends Fragment {
             loggedTimes.add(time);
 
         }
+    }
+
+    private void addFood (final String username, final String token,
+                              final User user, final String name, final boolean isHighInCarbs, final int time) {
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, URLs.URL_ADD_FOOD,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+
+                        try {
+                            // Get the user from the response
+                            JSONObject responseJson = new JSONObject(response);
+                            Log.d("loginresponse", responseJson.toString());
+
+                            // Store the activity json response into shared preferences
+                            SharedPrefManager.getInstance(getContext().getApplicationContext()).addFood(user, responseJson.toString());
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        // DOES NOT WORK
+//                        Toast.makeText(getContext().getApplicationContext(), error.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                }) {
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                Map<String, String> params = new HashMap<>();
+                params.put("username", username);
+                params.put("secret_token", token);
+                JSONObject newFoodObj = new JSONObject();
+                try {
+                    newFoodObj.put("name", name);
+                    newFoodObj.put("high_carbs", Boolean.toString(isHighInCarbs));
+                    newFoodObj.put("time", Integer.toString(time));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                params.put("newFood", newFoodObj.toString());
+                return params;
+            }
+
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> params = new HashMap<>();
+                params.put("Authorization", "JWT " + token);
+                return params;
+            }
+        };
+        VolleySingleton.getInstance(getContext()).addToRequestQueue(stringRequest);
     }
 
 

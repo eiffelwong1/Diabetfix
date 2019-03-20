@@ -2,12 +2,15 @@ package com.example.diabetfix;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.InputFilter;
 import android.text.InputType;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,14 +22,22 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.mongodb.lang.Nullable;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
-import java.util.Vector;
 
 public class ExerciseFragment extends Fragment {
 
@@ -50,10 +61,8 @@ public class ExerciseFragment extends Fragment {
         user = SharedPrefManager.getInstance(getContext()).getUser();
 
         //Input here the number for recommended carbs intake
-        String jsonStr = user.getActivities();
-        Vector<Map<String, Integer>> activityPattern = Context.loadUserActivityPattern(jsonStr);
         TextView exerciseText = view.findViewById(R.id.exerciseScore);
-        exerciseText.setText(Context.makeActivityRecommendation(activityPattern));
+        exerciseText.setText("10");
 
         Button btn = view.findViewById(R.id.addExerciseLog);
         btn.setOnClickListener(new View.OnClickListener() {
@@ -63,7 +72,7 @@ public class ExerciseFragment extends Fragment {
             }
         });
 
-        //parseActivity(user.getActivities());
+        parseActivity(user.getActivities());
 
         initRecyclerView(view);
 
@@ -162,7 +171,8 @@ public class ExerciseFragment extends Fragment {
                         names.add(name);
                         loggedTimes.add(exerciseTime);
                         durations.add(durationTime);
-
+                        // Add activity to database
+                        addActivity(user.getUsername(), user.getToken(), user, name, exerciseTime, durationTime);
                         Toast.makeText(getActivity(), name + " successfully logged", Toast.LENGTH_LONG).show();
                         dialog.cancel();
 
@@ -208,5 +218,57 @@ public class ExerciseFragment extends Fragment {
         }
     }
 
+    private void addActivity (final String username, final String token,
+                              final User user, final String name, final int time, final int duration) {
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, URLs.URL_ADD_ACTIVITY,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
 
+                        try {
+                            // Get the user from the response
+                            JSONObject responseJson = new JSONObject(response);
+                            Log.d("loginresponse", responseJson.toString());
+
+                            // Store the activity json response into shared preferences
+                            SharedPrefManager.getInstance(getContext().getApplicationContext()).addActivity(user, responseJson.toString());
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        // DOES NOT WORK
+//                        Toast.makeText(getContext().getApplicationContext(), error.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                }) {
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                Map<String, String> params = new HashMap<>();
+                params.put("username", username);
+                params.put("secret_token", token);
+                JSONObject newActivityObj = new JSONObject();
+                try {
+                    newActivityObj.put("kind", name);
+                    newActivityObj.put("duration", Integer.toString(duration));
+                    newActivityObj.put("time", Integer.toString(time));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                params.put("newActivity", newActivityObj.toString());
+                return params;
+            }
+
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> params = new HashMap<>();
+                params.put("Authorization", "JWT " + token);
+                return params;
+            }
+        };
+        VolleySingleton.getInstance(getContext()).addToRequestQueue(stringRequest);
+    }
 }

@@ -38,56 +38,16 @@ public class MainActivity extends AppCompatActivity {
     RadioGroup radioGroupHealthFocus;
     ProgressBar progressBar;
 
-    /*private TextView mTextMessage;
-    ProgressBar progressBar;
-    private TextView mTextMessage;
-
-    private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
-            = new BottomNavigationView.OnNavigationItemSelectedListener() {
-
-        @Override
-        public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-            switch (item.getItemId()) {
-                case R.id.navigation_home:
-                    mTextMessage.setText(R.string.title_home);
-                    return true;
-                case R.id.navigation_dashboard:
-                    mTextMessage.setText(R.string.title_dashboard);
-                    return true;
-                case R.id.navigation_notifications:
-                    mTextMessage.setText(R.string.title_notifications);
-                    return true;
-            }
-            return false;
-        }
-    };*/
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        //startActivity(new Intent(this, HomeActivity.class));
-
-        /*mTextMessage = (TextView) findViewById(R.id.message);
-        BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
-        navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);*/
-//        Log.d("mytag",Integer.toString(Context.test_function(1, 0)));
-//        Button btn = (Button) findViewById(R.id.button_user_history);
-//        btn.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Log.i("App", "This is a log message for user history button");
-//                Toast.makeText(getApplicationContext(), "It's magic", Toast.LENGTH_SHORT)
-//                        .show();
-//
-//
-//            }
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
 
         // If the user is already logged in, go to their profile
         if (SharedPrefManager.getInstance(this).isLoggedIn()) {
             finish();
-            startActivity(new Intent(this, ProfileActivity.class));
+            startActivity(new Intent(this, HomeActivity.class));
             return;
         }
 
@@ -228,7 +188,7 @@ public class MainActivity extends AppCompatActivity {
 
                             // Start the profile
                             finish();
-                            startActivity(new Intent(getApplicationContext(), ProfileActivity.class));
+                            startActivity(new Intent(getApplicationContext(), HomeActivity.class));
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }

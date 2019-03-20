@@ -6,6 +6,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.view.View;
 
 public class HomeActivity extends AppCompatActivity {
 
@@ -29,9 +30,9 @@ public class HomeActivity extends AppCompatActivity {
                         case R.id.nav_exercise:
                             selectedFragment = new ExerciseFragment();
                             break;
-                        case R.id.nav_journal:
-                            selectedFragment = new JournalFragment();
-                            break;
+                        case R.id.nav_log_out:
+                            SharedPrefManager.getInstance(getApplicationContext()).logout();
+                            return false;
 
                     }
 
