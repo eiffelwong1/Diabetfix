@@ -76,7 +76,7 @@ public class GlucoseFragment extends Fragment {
         }
         int bloodSugarScore = Score.getBloodSugarScore(recentBloodSugar);
         TextView glucoseText = view.findViewById(R.id.glucoseScore);
-        glucoseText.setText(bloodSugarScore);
+        glucoseText.setText(Integer.toString(bloodSugarScore));
 
         initRecyclerView(view);
 
@@ -161,8 +161,9 @@ public class GlucoseFragment extends Fragment {
 
                         //Update BloodSugarScoreText
                         int bloodSugarScore = Score.getBloodSugarScore(glucoseLevels.get(glucoseLevels.size() - 1));
+                        System.out.println(bloodSugarScore);
                         TextView glucoseText = view.findViewById(R.id.glucoseScore);
-                        glucoseText.setText(bloodSugarScore);
+                        glucoseText.setText(Integer.toString(bloodSugarScore));
 
                         // Add glucose level to database
                         addGlucose(user.getUsername(), user.getToken(), user, glucoseLevel, glucoseTime);

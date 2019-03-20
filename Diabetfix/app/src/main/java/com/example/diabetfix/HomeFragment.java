@@ -29,7 +29,7 @@ public class HomeFragment extends Fragment {
     {
         user = SharedPrefManager.getInstance(getContext()).getUser();
         View view = inflater.inflate(R.layout.home_fragment, container, false);
-        
+
         parseGlucose(user.getGlucoseLevels());
         int averageGlucose;
         if (glucoseLevels.size() == 0)
@@ -61,7 +61,7 @@ public class HomeFragment extends Fragment {
         }
         else if (healthScore >= 4)
         {
-            homeScore.setTextColor(Color.YELLOW);
+            homeScore.setTextColor(Color.BLACK);
         }
         else
         {

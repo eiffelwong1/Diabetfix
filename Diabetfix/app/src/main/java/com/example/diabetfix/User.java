@@ -8,9 +8,6 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-enum sex_options {MALE, FEMALE, OTHER;}
-enum healthFocusOptions {ACTIVITY, DIET, BOTH;}
-
 public class User {
     protected String username, password;
     protected JSONObject info = new JSONObject();
