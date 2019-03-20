@@ -18,12 +18,22 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.mongodb.lang.Nullable;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class GlucoseFragment extends Fragment {
 
@@ -57,7 +67,7 @@ public class GlucoseFragment extends Fragment {
             }
         });
 
-        //parseGlucose(user.getGlucoseLevels());
+        parseGlucose(user.getGlucoseLevels());
 
         initRecyclerView(view);
 
@@ -139,7 +149,8 @@ public class GlucoseFragment extends Fragment {
                         //Use glucoseTime, glucoseLevel and user to enter into database
                         loggedTimes.add(glucoseTime);
                         glucoseLevels.add(glucoseLevel);
-
+                        // Add glucose level to database
+                        addGlucose(user.getUsername(), user.getToken(), user, glucoseLevel, glucoseTime);
                         Toast.makeText(getActivity(), glucoseLevel + " successfully logged", Toast.LENGTH_LONG).show();
                         dialog.cancel();
 
@@ -185,6 +196,58 @@ public class GlucoseFragment extends Fragment {
         }
     }
 
+    private void addGlucose (final String username, final String token,
+                          final User user, final int glucoseLevel, final int time) {
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, URLs.URL_ADD_GLUCOSE_LEVEL,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+
+                        try {
+                            // Get the user from the response
+                            JSONObject responseJson = new JSONObject(response);
+                            Log.d("loginresponse", responseJson.toString());
+
+                            // Store the activity json response into shared preferences
+                            SharedPrefManager.getInstance(getContext().getApplicationContext()).addGlucoseLevel(user, responseJson.toString());
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        // DOES NOT WORK
+//                        Toast.makeText(getContext().getApplicationContext(), error.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                }) {
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                Map<String, String> params = new HashMap<>();
+                params.put("username", username);
+                params.put("secret_token", token);
+                JSONObject newGlucoseObj = new JSONObject();
+                try {
+                    newGlucoseObj.put("level", Integer.toString(glucoseLevel));
+                    newGlucoseObj.put("time", Integer.toString(time));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                params.put("newGlucoseLevel", newGlucoseObj.toString());
+                return params;
+            }
+
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> params = new HashMap<>();
+                params.put("Authorization", "JWT " + token);
+                return params;
+            }
+        };
+        VolleySingleton.getInstance(getContext()).addToRequestQueue(stringRequest);
+    }
 
 
 

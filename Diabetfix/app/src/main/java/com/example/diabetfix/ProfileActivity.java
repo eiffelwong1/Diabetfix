@@ -49,7 +49,7 @@ public class ProfileActivity extends AppCompatActivity {
         findViewById(R.id.buttonAddActivity).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                addActivity(user.getUsername(), user.getToken(), user);
+//                addActivity(user.getUsername(), user.getToken(), user);
             }
         });
 
@@ -64,59 +64,59 @@ public class ProfileActivity extends AppCompatActivity {
         });
     }
 
-    private void addActivity (final String username, final String token, final User user) {
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, URLs.URL_ADD_ACTIVITY,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-
-                        try {
-                            // Get the user from the response
-                            JSONObject responseJson = new JSONObject(response);
-                            Log.d("loginresponse", responseJson.toString());
-
-                            // Store the activity json response into shared preferences
-                            SharedPrefManager.getInstance(getApplicationContext()).addActivity(user, responseJson.toString());
-
-                            // Start the profile
-                            finish();
-                            startActivity(new Intent(getApplicationContext(), ProfileActivity.class));
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(getApplicationContext(), error.getMessage(), Toast.LENGTH_SHORT).show();
-                    }
-                }) {
-            @Override
-            protected Map<String, String> getParams() throws AuthFailureError {
-                Map<String, String> params = new HashMap<>();
-                params.put("username", username);
-                params.put("secret_token", token);
-                JSONObject newActivityObj = new JSONObject();
-                try {
-                    newActivityObj.put("kind", "run");
-                    newActivityObj.put("duration", "10");
-                    newActivityObj.put("time", "Monday");
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                params.put("newActivity", newActivityObj.toString());
-                return params;
-            }
-
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> params = new HashMap<>();
-                params.put("Authorization", "JWT " + token);
-                return params;
-            }
-        };
-        VolleySingleton.getInstance(this).addToRequestQueue(stringRequest);
-    }
+//    private void addActivity (final String username, final String token, final User user) {
+//        StringRequest stringRequest = new StringRequest(Request.Method.POST, URLs.URL_ADD_ACTIVITY,
+//                new Response.Listener<String>() {
+//                    @Override
+//                    public void onResponse(String response) {
+//
+//                        try {
+//                            // Get the user from the response
+//                            JSONObject responseJson = new JSONObject(response);
+//                            Log.d("loginresponse", responseJson.toString());
+//
+//                            // Store the activity json response into shared preferences
+//                            SharedPrefManager.getInstance(getApplicationContext()).addActivity(user, responseJson.toString());
+//
+//                            // Start the profile
+//                            finish();
+//                            startActivity(new Intent(getApplicationContext(), ProfileActivity.class));
+//                        } catch (JSONException e) {
+//                            e.printStackTrace();
+//                        }
+//                    }
+//                },
+//                new Response.ErrorListener() {
+//                    @Override
+//                    public void onErrorResponse(VolleyError error) {
+//                        Toast.makeText(getApplicationContext(), error.getMessage(), Toast.LENGTH_SHORT).show();
+//                    }
+//                }) {
+//            @Override
+//            protected Map<String, String> getParams() throws AuthFailureError {
+//                Map<String, String> params = new HashMap<>();
+//                params.put("username", username);
+//                params.put("secret_token", token);
+//                JSONObject newActivityObj = new JSONObject();
+//                try {
+//                    newActivityObj.put("kind", "run");
+//                    newActivityObj.put("duration", "10");
+//                    newActivityObj.put("time", "Monday");
+//                } catch (JSONException e) {
+//                    e.printStackTrace();
+//                }
+//                params.put("newActivity", newActivityObj.toString());
+//                return params;
+//            }
+//
+//            @Override
+//            public Map<String, String> getHeaders() throws AuthFailureError {
+//                Map<String, String> params = new HashMap<>();
+//                params.put("Authorization", "JWT " + token);
+//                return params;
+//            }
+//        };
+//        VolleySingleton.getInstance(this).addToRequestQueue(stringRequest);
+//    }
 }
 
