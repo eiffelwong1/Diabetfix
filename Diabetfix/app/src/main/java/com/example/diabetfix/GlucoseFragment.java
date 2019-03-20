@@ -166,8 +166,13 @@ public class GlucoseFragment extends Fragment {
                             recentBloodSugar = glucoseLevels.get(glucoseLevels.size() - 1);
                         }
                         int bloodSugarScore = Score.getBloodSugarScore(recentBloodSugar);
-                        TextView glucoseText = view.findViewById(R.id.glucoseScore);
+
+//                        TextView glucoseText = view.findViewById(R.id.glucoseScore);
+//                        glucoseText.setText(Integer.toString(bloodSugarScore));
+
+                        TextView glucoseText = getView().findViewById(R.id.glucoseScore);
                         glucoseText.setText(Integer.toString(bloodSugarScore));
+
 
                         // Add glucose level to database
                         addGlucose(user.getUsername(), user.getToken(), user, glucoseLevel, glucoseTime);
