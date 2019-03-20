@@ -45,7 +45,17 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int i) {
-        viewHolder.time.setText(Integer.toString(loggedTimes.get(i)));
+        int militaryHour = loggedTimes.get(i);
+        String period;
+        if (militaryHour/12 >= 1)
+        {
+            period = "PM";
+        }
+        else
+        {
+            period = "AM";
+        }
+        viewHolder.time.setText(Integer.toString(militaryHour % 12) + " " + period);
 
         if (names.size() > 0)
         {
@@ -53,7 +63,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         }
         if (glucoseLevel.size() > 0)
         {
-            viewHolder.glucoseLevel.setText(Integer.toString(glucoseLevel.get(i)));
+            viewHolder.glucoseLevel.setText(Integer.toString(glucoseLevel.get(i)) + " mg/dL");
         }
         if (durations.size() > 0)
         {

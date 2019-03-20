@@ -31,8 +31,8 @@ public class HomeActivity extends AppCompatActivity {
                             selectedFragment = new ExerciseFragment();
                             break;
                         case R.id.nav_log_out:
-                            SharedPrefManager.getInstance(getApplicationContext()).logout();
-                            return false;
+                            selectedFragment = new LogOutFragment();
+                            break;
 
                     }
 
@@ -50,6 +50,9 @@ public class HomeActivity extends AppCompatActivity {
 
         BottomNavigationView bottomNav = findViewById(R.id.bottom_navigation);
         bottomNav.setOnNavigationItemSelectedListener(navListener);
+
+        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+                new HomeFragment()).commit();
     }
 
 

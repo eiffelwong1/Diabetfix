@@ -50,6 +50,8 @@ public class ExerciseFragment extends Fragment {
     private ArrayList<Boolean> carbBools = new ArrayList<>();
     private ArrayList<Integer> glucoseLevels = new ArrayList<>();
 
+    String jsonStr;
+
 
     //Get current user
     private User user;
@@ -62,7 +64,7 @@ public class ExerciseFragment extends Fragment {
         user = SharedPrefManager.getInstance(getContext()).getUser();
 
         //Input here the number for recommended carbs intake
-        String jsonStr = user.getActivities();
+        jsonStr = user.getActivities();
         Vector<Map<String, Integer>> activityPattern = Context.loadUserActivityPattern(jsonStr);
 
         TextView exerciseText = view.findViewById(R.id.exerciseScore);
@@ -76,7 +78,7 @@ public class ExerciseFragment extends Fragment {
             }
         });
 
-        parseActivity(user.getActivities());
+        parseActivity(jsonStr);
 
         initRecyclerView(view);
 
@@ -175,6 +177,14 @@ public class ExerciseFragment extends Fragment {
                         names.add(name);
                         loggedTimes.add(exerciseTime);
                         durations.add(durationTime);
+
+                        //Update text recommendation
+                        jsonStr = user.getActivities();
+                        Vector<Map<String, Integer>> activityPattern = Context.loadUserActivityPattern(jsonStr);
+
+                        TextView exerciseText = view.findViewById(R.id.exerciseScore);
+                        exerciseText.setText(Context.makeActivityRecommendation(activityPattern));
+
                         // Add activity to database
                         addActivity(user.getUsername(), user.getToken(), user, name, exerciseTime, durationTime);
                         Toast.makeText(getActivity(), name + " successfully logged", Toast.LENGTH_LONG).show();
