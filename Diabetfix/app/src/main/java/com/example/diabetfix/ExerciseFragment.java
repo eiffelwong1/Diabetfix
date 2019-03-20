@@ -182,7 +182,7 @@ public class ExerciseFragment extends Fragment {
                         jsonStr = user.getActivities();
                         Vector<Map<String, Integer>> activityPattern = Context.loadUserActivityPattern(jsonStr);
 
-                        TextView exerciseText = view.findViewById(R.id.exerciseScore);
+                        TextView exerciseText = getView().findViewById(R.id.exerciseScore);
                         exerciseText.setText(Context.makeActivityRecommendation(activityPattern));
 
                         // Add activity to database
