@@ -38,6 +38,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Vector;
 
 public class ExerciseFragment extends Fragment {
 
@@ -61,8 +62,11 @@ public class ExerciseFragment extends Fragment {
         user = SharedPrefManager.getInstance(getContext()).getUser();
 
         //Input here the number for recommended carbs intake
+        String jsonStr = user.getActivities();
+        Vector<Map<String, Integer>> activityPattern = Context.loadUserActivityPattern(jsonStr);
+
         TextView exerciseText = view.findViewById(R.id.exerciseScore);
-        exerciseText.setText("10");
+        exerciseText.setText(Context.makeActivityRecommendation(activityPattern));
 
         Button btn = view.findViewById(R.id.addExerciseLog);
         btn.setOnClickListener(new View.OnClickListener() {
