@@ -18,7 +18,7 @@ public class HomeFragment extends Fragment {
     {
         user = SharedPrefManager.getInstance(getContext()).getUser();
         View view = inflater.inflate(R.layout.home_fragment, container, false);
-        
+
         int healthScore = Score.getOverallScore(0,user.getHeight(), user.getWeight(),user.getAge(), 10, 300);
 
 
