@@ -6,13 +6,8 @@
     </shared>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="c268b4d8-87ee-4ef1-853b-a074d154b33a" name="Default Changelist" comment="score mega class">
-      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
+    <list default="true" id="c268b4d8-87ee-4ef1-853b-a074d154b33a" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/diabetfix/ExerciseFragment.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/diabetfix/ExerciseFragment.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/diabetfix/FoodFragment.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/diabetfix/FoodFragment.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/diabetfix/HomeFragment.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/diabetfix/HomeFragment.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/res/menu/bottom_navigation.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/res/menu/bottom_navigation.xml" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -96,8 +91,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/com/example/diabetfix/HomeActivity.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="68">
-              <caret line="9" column="13" selection-start-line="9" selection-start-column="13" selection-end-line="9" selection-end-column="13" />
+            <state relative-caret-position="85">
+              <caret line="10" column="13" selection-start-line="10" selection-start-column="13" selection-end-line="10" selection-end-column="13" />
             </state>
           </provider>
         </entry>
@@ -111,11 +106,19 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/com/example/diabetfix/GlucoseFragment.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-68">
-              <caret line="140" column="54" lean-forward="true" selection-start-line="140" selection-start-column="42" selection-end-line="140" selection-end-column="54" />
+            <state relative-caret-position="17">
+              <caret line="55" column="69" selection-start-line="55" selection-start-column="69" selection-end-line="55" selection-end-column="69" />
+              <folding>
+                <element signature="e#2108#2257#0" expanded="true" />
+                <element signature="e#2256#2257#0" expanded="true" />
+                <element signature="e#4073#5880#0" expanded="true" />
+                <element signature="e#5879#5880#0" expanded="true" />
+                <element signature="e#5926#6153#0" expanded="true" />
+                <element signature="e#6152#6153#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -123,8 +126,19 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/com/example/diabetfix/FoodFragment.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="119">
-              <caret line="51" column="69" lean-forward="true" selection-start-line="51" selection-start-column="8" selection-end-line="51" selection-end-column="69" />
+            <state relative-caret-position="2295">
+              <caret line="135" column="41" lean-forward="true" selection-start-line="135" selection-start-column="41" selection-end-line="135" selection-end-column="41" />
+              <folding>
+                <element signature="imports" expanded="true" />
+                <element signature="e#2939#3085#0" expanded="true" />
+                <element signature="e#3084#3085#0" expanded="true" />
+                <element signature="e#5719#6247#0" expanded="true" />
+                <element signature="e#6246#6247#0" expanded="true" />
+                <element signature="e#6336#8062#0" expanded="true" />
+                <element signature="e#8061#8062#0" expanded="true" />
+                <element signature="e#8108#8335#0" expanded="true" />
+                <element signature="e#8334#8335#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -166,11 +180,19 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/java/com/example/diabetfix/ExerciseFragment.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="238">
-              <caret line="54" column="46" selection-start-line="54" selection-start-column="46" selection-end-line="54" selection-end-column="46" />
+            <state relative-caret-position="255">
+              <caret line="66" column="60" lean-forward="true" selection-start-line="66" selection-start-column="60" selection-end-line="66" selection-end-column="60" />
+              <folding>
+                <element signature="e#2246#2396#0" expanded="true" />
+                <element signature="e#2395#2396#0" expanded="true" />
+                <element signature="e#4561#6677#0" expanded="true" />
+                <element signature="e#6676#6677#0" expanded="true" />
+                <element signature="e#6723#6950#0" expanded="true" />
+                <element signature="e#6949#6950#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -199,9 +221,9 @@
         <option value="$PROJECT_DIR$/src/main/java/com/example/diabetfix/ExerciseScore.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/example/diabetfix/Score.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/example/diabetfix/ExerciseFragment.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/example/diabetfix/FoodFragment.java" />
         <option value="$PROJECT_DIR$/src/main/res/menu/bottom_navigation.xml" />
         <option value="$PROJECT_DIR$/src/main/java/com/example/diabetfix/HomeFragment.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/example/diabetfix/FoodFragment.java" />
       </list>
     </option>
   </component>
@@ -415,7 +437,14 @@
       <option name="project" value="LOCAL" />
       <updated>1552869668463</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="score mega class">
+      <created>1553046961159</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1553046961160</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="TodoView">
@@ -429,22 +458,21 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="56" y="-6" width="1231" height="733" extended-state="6" />
-    <editor active="true" />
     <layout>
       <window_info id="Captures" order="0" side_tool="true" weight="0.25" />
-      <window_info active="true" content_ui="combo" id="Project" order="1" visible="true" weight="0.21994884" />
+      <window_info content_ui="combo" id="Project" order="1" visible="true" weight="0.21994884" />
       <window_info id="Structure" order="2" side_tool="true" />
       <window_info id="Image Layers" order="3" />
       <window_info id="Designer" order="4" />
       <window_info id="Capture Tool" order="5" />
       <window_info id="Favorites" order="6" side_tool="true" />
       <window_info id="Build Variants" order="7" side_tool="true" />
-      <window_info anchor="bottom" id="Version Control" order="0" weight="0.32890365" />
+      <window_info active="true" anchor="bottom" id="Version Control" order="0" visible="true" weight="0.32890365" />
       <window_info anchor="bottom" id="TODO" order="1" weight="0.3286119" />
       <window_info anchor="bottom" id="Terminal" order="2" weight="0.3286119" />
       <window_info anchor="bottom" id="Event Log" order="3" side_tool="true" />
       <window_info anchor="bottom" id="Flutter Performance" order="4" side_tool="true" />
-      <window_info anchor="bottom" id="Build" order="5" visible="true" weight="0.32724252" />
+      <window_info anchor="bottom" id="Build" order="5" weight="0.32724252" />
       <window_info anchor="bottom" id="Run" order="6" weight="0.3286119" />
       <window_info anchor="bottom" id="Logcat" order="7" />
       <window_info anchor="bottom" id="Android Profiler" order="8" show_stripe_button="false" />
@@ -503,13 +531,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/example/diabetfix/ExerciseFragment.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="238">
-          <caret line="54" column="46" selection-start-line="54" selection-start-column="46" selection-end-line="54" selection-end-column="46" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/example/diabetfix/User.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-2346">
@@ -534,15 +555,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/example/diabetfix/HomeActivity.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="68">
-          <caret line="9" column="13" selection-start-line="9" selection-start-column="13" selection-end-line="9" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/example/diabetfix/FoodFragment.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="119">
-          <caret line="51" column="69" lean-forward="true" selection-start-line="51" selection-start-column="8" selection-end-line="51" selection-end-column="69" />
+        <state relative-caret-position="85">
+          <caret line="10" column="13" selection-start-line="10" selection-start-column="13" selection-end-line="10" selection-end-column="13" />
         </state>
       </provider>
     </entry>
@@ -562,8 +576,49 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/example/diabetfix/GlucoseFragment.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-68">
-          <caret line="140" column="54" lean-forward="true" selection-start-line="140" selection-start-column="42" selection-end-line="140" selection-end-column="54" />
+        <state relative-caret-position="17">
+          <caret line="55" column="69" selection-start-line="55" selection-start-column="69" selection-end-line="55" selection-end-column="69" />
+          <folding>
+            <element signature="e#2108#2257#0" expanded="true" />
+            <element signature="e#2256#2257#0" expanded="true" />
+            <element signature="e#4073#5880#0" expanded="true" />
+            <element signature="e#5879#5880#0" expanded="true" />
+            <element signature="e#5926#6153#0" expanded="true" />
+            <element signature="e#6152#6153#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/example/diabetfix/FoodFragment.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2295">
+          <caret line="135" column="41" lean-forward="true" selection-start-line="135" selection-start-column="41" selection-end-line="135" selection-end-column="41" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#2939#3085#0" expanded="true" />
+            <element signature="e#3084#3085#0" expanded="true" />
+            <element signature="e#5719#6247#0" expanded="true" />
+            <element signature="e#6246#6247#0" expanded="true" />
+            <element signature="e#6336#8062#0" expanded="true" />
+            <element signature="e#8061#8062#0" expanded="true" />
+            <element signature="e#8108#8335#0" expanded="true" />
+            <element signature="e#8334#8335#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/example/diabetfix/ExerciseFragment.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="255">
+          <caret line="66" column="60" lean-forward="true" selection-start-line="66" selection-start-column="60" selection-end-line="66" selection-end-column="60" />
+          <folding>
+            <element signature="e#2246#2396#0" expanded="true" />
+            <element signature="e#2395#2396#0" expanded="true" />
+            <element signature="e#4561#6677#0" expanded="true" />
+            <element signature="e#6676#6677#0" expanded="true" />
+            <element signature="e#6723#6950#0" expanded="true" />
+            <element signature="e#6949#6950#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
