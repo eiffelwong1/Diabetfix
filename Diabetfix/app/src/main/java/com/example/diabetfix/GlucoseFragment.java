@@ -55,9 +55,7 @@ public class GlucoseFragment extends Fragment {
         View view = inflater.inflate(R.layout.glucose_fragment, container, false);
         user = SharedPrefManager.getInstance(getContext()).getUser();
 
-        //Input here the number for recommended carbs intake
-        TextView glucoseText = view.findViewById(R.id.glucoseScore);
-        glucoseText.setText("10");
+
 
         Button btn = view.findViewById(R.id.addGlucoseLog);
         btn.setOnClickListener(new View.OnClickListener() {
@@ -68,6 +66,17 @@ public class GlucoseFragment extends Fragment {
         });
 
         parseGlucose(user.getGlucoseLevels());
+
+        //Input here the number for recommended carbs intake
+
+        int recentBloodSugar = 0;
+        if (glucoseLevels.size() > 0)
+        {
+            recentBloodSugar = glucoseLevels.get(glucoseLevels.size() - 1);
+        }
+        int bloodSugarScore = Score.getBloodSugarScore(recentBloodSugar);
+        TextView glucoseText = view.findViewById(R.id.glucoseScore);
+        glucoseText.setText(bloodSugarScore);
 
         initRecyclerView(view);
 
@@ -149,6 +158,12 @@ public class GlucoseFragment extends Fragment {
                         //Use glucoseTime, glucoseLevel and user to enter into database
                         loggedTimes.add(glucoseTime);
                         glucoseLevels.add(glucoseLevel);
+
+                        //Update BloodSugarScoreText
+                        int bloodSugarScore = Score.getBloodSugarScore(glucoseLevels.get(glucoseLevels.size() - 1));
+                        TextView glucoseText = view.findViewById(R.id.glucoseScore);
+                        glucoseText.setText(bloodSugarScore);
+
                         // Add glucose level to database
                         addGlucose(user.getUsername(), user.getToken(), user, glucoseLevel, glucoseTime);
                         Toast.makeText(getActivity(), glucoseLevel + " successfully logged", Toast.LENGTH_LONG).show();

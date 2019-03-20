@@ -33,6 +33,7 @@ import com.mongodb.lang.Nullable;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.Vector;
@@ -42,6 +43,7 @@ import java.util.Map;
 public class FoodFragment extends Fragment {
 
     private boolean isHighInCarbs = true;
+    private String jsonStr;
 
     private ArrayList<String> names = new ArrayList<>();
     private ArrayList<Boolean> carbBools = new ArrayList<>();
@@ -62,16 +64,38 @@ public class FoodFragment extends Fragment {
         user = SharedPrefManager.getInstance(getContext()).getUser();
 
         //Input here the number for recommended carbs intake
-        int healthScore = Score.getOverallScore(0,user.getHeight(), user.getWeight(),user.getAge(), 210, 150);
+        jsonStr = user.getFood();
+
+        ArrayList<Integer> tempGlucoseList = new ArrayList<>();
+        parseGlucose(user.getGlucoseLevels(), tempGlucoseList);
+        int averageGlucose;
+        if (tempGlucoseList.size() == 0)
+        {
+            averageGlucose = 120;
+        }
+        else
+        {
+            averageGlucose = calculateAverage(tempGlucoseList);
+        }
+
+        ArrayList<Integer> tempActivityList = new ArrayList<>();
+        parseActivity(user.getActivities(), tempActivityList);
+        int recentActivityTime = 0;
+        if (durations.size() > 0)
+        {
+            recentActivityTime = tempActivityList.get(tempActivityList.size() - 1);
+        }
+
+        int healthScore = Score.getOverallScore(0,user.getHeight(), user.getWeight(),user.getAge(), recentActivityTime, averageGlucose);
         boolean haveDiabetes = user.getDiabeticStatus();
-        String jsonStr = user.getFood();
+
         Vector<Map<String, Integer>> breakfast = Context.loadUserBreakfastPattern(jsonStr);
         Vector<Map<String, Integer>> lunch = Context.loadUserLunchPattern(jsonStr);
         Vector<Map<String, Integer>> dinner = Context.loadUserDinnerPattern(jsonStr);
         Vector<Map<String, Integer>> snack = Context.loadUserSnackPattern(jsonStr);
 
-        TextView carbText = view.findViewById(R.id.carbsRecommendation);
-        carbText.setText(Context.makeFoodRecommendation(healthScore, haveDiabetes, breakfast, lunch, dinner, snack));
+        TextView recommendText = view.findViewById(R.id.foodRecommendation);
+        recommendText.setText(Context.makeFoodRecommendation(healthScore, haveDiabetes, breakfast, lunch, dinner, snack));
 
         Button btn = view.findViewById(R.id.addFoodLog);
         btn.setOnClickListener(new View.OnClickListener() {
@@ -81,19 +105,7 @@ public class FoodFragment extends Fragment {
             }
         });
 
-        parseFood(user.getFood());
-
-//        names.add("Chicken");
-//        names.add("Broccoli");
-//        names.add("Rice");
-//
-//        carbBools.add(false);
-//        carbBools.add(false);
-//        carbBools.add(true);
-//
-//        loggedTimes.add(11);
-//        loggedTimes.add(11);
-//        loggedTimes.add(11);
+        parseFood(jsonStr);
 
         initRecyclerView(view);
 
@@ -209,6 +221,41 @@ public class FoodFragment extends Fragment {
                         names.add(name);
                         loggedTimes.add(foodTime);
                         carbBools.add(isHighInCarbs);
+
+                        //Update food recommendation
+                        jsonStr = user.getFood();
+
+                        ArrayList<Integer> tempGlucoseList = new ArrayList<>();
+                        parseGlucose(user.getGlucoseLevels(), tempGlucoseList);
+                        int averageGlucose;
+                        if (tempGlucoseList.size() == 0)
+                        {
+                            averageGlucose = 120;
+                        }
+                        else
+                        {
+                            averageGlucose = calculateAverage(tempGlucoseList);
+                        }
+
+                        ArrayList<Integer> tempActivityList = new ArrayList<>();
+                        parseActivity(user.getActivities(), tempActivityList);
+                        int recentActivityTime = 0;
+                        if (durations.size() > 0)
+                        {
+                            recentActivityTime = tempActivityList.get(tempActivityList.size() - 1);
+                        }
+
+                        int healthScore = Score.getOverallScore(0,user.getHeight(), user.getWeight(),user.getAge(), recentActivityTime, averageGlucose);
+                        boolean haveDiabetes = user.getDiabeticStatus();
+
+                        Vector<Map<String, Integer>> breakfast = Context.loadUserBreakfastPattern(jsonStr);
+                        Vector<Map<String, Integer>> lunch = Context.loadUserLunchPattern(jsonStr);
+                        Vector<Map<String, Integer>> dinner = Context.loadUserDinnerPattern(jsonStr);
+                        Vector<Map<String, Integer>> snack = Context.loadUserSnackPattern(jsonStr);
+
+                        TextView recommendText = view.findViewById(R.id.foodRecommendation);
+                        recommendText.setText(Context.makeFoodRecommendation(healthScore, haveDiabetes, breakfast, lunch, dinner, snack));
+
                         // Add food to database
                         addFood(user.getUsername(), user.getToken(), user, name, isHighInCarbs, foodTime);
                         Toast.makeText(getActivity(), name + " successfully logged", Toast.LENGTH_LONG).show();
@@ -315,6 +362,46 @@ public class FoodFragment extends Fragment {
             }
         };
         VolleySingleton.getInstance(getContext()).addToRequestQueue(stringRequest);
+    }
+
+    private void parseGlucose(String jsonStr, ArrayList<Integer> glucoseList)
+    {
+        JsonParser jsonParser = new JsonParser();
+        JsonArray arrayFromString = jsonParser.parse(jsonStr).getAsJsonArray();
+        for (int i = 0; i < arrayFromString.size(); ++i)
+        {
+            JsonObject obj = arrayFromString.get(i).getAsJsonObject();
+            int glucose = obj.get("level").getAsInt();
+
+            glucoseList.add(glucose);
+        }
+    }
+
+    private void parseActivity(String jsonStr, ArrayList<Integer> activityList)
+    {
+        JsonParser jsonParser = new JsonParser();
+        JsonArray arrayFromString = jsonParser.parse(jsonStr).getAsJsonArray();
+        for (int i = 0; i < arrayFromString.size(); ++i) {
+            JsonObject obj = arrayFromString.get(i).getAsJsonObject();
+            int duration = obj.get("duration").getAsInt();
+
+            activityList.add(duration);
+        }
+    }
+
+    private int calculateAverage(ArrayList<Integer> glucoseLevels)
+    {
+        if (glucoseLevels.size() == 0)
+        {
+            return 0;
+        }
+
+        int sum = 0;
+        for (int glucoseLevel: glucoseLevels)
+        {
+            sum += glucoseLevel;
+        }
+        return sum/glucoseLevels.size();
     }
 
 

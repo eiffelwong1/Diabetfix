@@ -4,16 +4,17 @@
     android:layout_height="match_parent">
 
     <TextView
-        android:id="@+id/carbsRecommendationText"
+        android:id="@+id/foodRecommendationText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_centerInParent="true"
+        android:layout_gravity="center_horizontal"
         android:layout_marginTop="15dp"
-        android:text="@string/recommended_carb_intake" />
+        android:text="@string/recommended_food" />
 
     <TextView
-        android:id="@+id/carbsRecommendation"
+        android:id="@+id/foodRecommendation"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
