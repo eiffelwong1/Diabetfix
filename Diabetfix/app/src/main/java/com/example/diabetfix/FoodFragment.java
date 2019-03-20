@@ -26,6 +26,8 @@ import com.google.gson.JsonParser;
 import com.mongodb.lang.Nullable;
 
 import java.util.ArrayList;
+import java.util.Map;
+import java.util.Vector;
 
 public class FoodFragment extends Fragment {
 
@@ -50,8 +52,16 @@ public class FoodFragment extends Fragment {
         user = SharedPrefManager.getInstance(getContext()).getUser();
 
         //Input here the number for recommended carbs intake
+        int healthScore = Score.getOverallScore(0,user.getHeight(), user.getWeight(),user.getAge(), 210, 150);
+        boolean haveDiabetes = user.getDiabeticStatus();
+        String jsonStr = user.getFood();
+        Vector<Map<String, Integer>> breakfast = Context.loadUserBreakfastPattern(jsonStr);
+        Vector<Map<String, Integer>> lunch = Context.loadUserLunchPattern(jsonStr);
+        Vector<Map<String, Integer>> dinner = Context.loadUserDinnerPattern(jsonStr);
+        Vector<Map<String, Integer>> snack = Context.loadUserSnackPattern(jsonStr);
+
         TextView carbText = view.findViewById(R.id.carbsRecommendation);
-        carbText.setText("10");
+        carbText.setText(Context.notifyUserHealth(healthScore)+Context.makeFoodRecommendation(healthScore, haveDiabetes, breakfast, lunch, dinner, snack));
 
         Button btn = view.findViewById(R.id.addFoodLog);
         btn.setOnClickListener(new View.OnClickListener() {

@@ -11,15 +11,19 @@ import android.widget.TextView;
 import com.mongodb.lang.Nullable;
 
 public class HomeFragment extends Fragment {
-
+    private User user;
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState)
     {
+        user = SharedPrefManager.getInstance(getContext()).getUser();
         View view = inflater.inflate(R.layout.home_fragment, container, false);
 
+        int healthScore = Score.getOverallScore(0,user.getHeight(), user.getWeight(),user.getAge(), 210, 150);
+
+
         TextView homeScore = view.findViewById(R.id.homeScore);
-        homeScore.setText("10");
+        homeScore.setText(healthScore);
 
         return view;
     }
