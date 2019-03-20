@@ -253,7 +253,7 @@ public class FoodFragment extends Fragment {
                         Vector<Map<String, Integer>> dinner = Context.loadUserDinnerPattern(jsonStr);
                         Vector<Map<String, Integer>> snack = Context.loadUserSnackPattern(jsonStr);
 
-                        TextView recommendText = view.findViewById(R.id.foodRecommendation);
+                        TextView recommendText = getView().findViewById(R.id.foodRecommendation);
                         recommendText.setText(Context.makeFoodRecommendation(healthScore, haveDiabetes, breakfast, lunch, dinner, snack));
 
                         // Add food to database
